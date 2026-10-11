@@ -33,6 +33,7 @@ reports
 **/.ssh
 **/.aws
 **/.npmrc
+!/.npmrc
 **/.netrc
 **/.docker
 **/*.pem
