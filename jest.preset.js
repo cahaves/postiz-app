@@ -19,8 +19,11 @@ module.exports = {
     ],
   },
   moduleNameMapper: {
+    '^@gitroom/nestjs-libraries/redis/redis\\.service$':
+      '<rootDir>/tests/ai-text/redis.module.ts',
     ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
     '^isomorphic-dompurify$': '<rootDir>/tests/ai-text/dompurify.cjs',
   },
+  setupFiles: ['<rootDir>/tests/ai-text/network.preload.cjs'],
   setupFilesAfterEnv: ['<rootDir>/tests/ai-text/setup.ts'],
 };

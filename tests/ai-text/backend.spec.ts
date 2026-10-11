@@ -1,3 +1,12 @@
+const importTimeTransportErrors = ['net', 'tls'].map((name) => {
+  try {
+    require(name).connect({ host: '127.0.0.1', port: 1 });
+    return undefined;
+  } catch (error) {
+    return (error as Error).message;
+  }
+});
+
 import { AiTextService } from '@gitroom/nestjs-libraries/openai/ai.text.service';
 import { AiTextRequestDto } from '@gitroom/nestjs-libraries/dtos/posts/ai.text.dto';
 import { ValidationPipe } from '@nestjs/common';
@@ -1022,4 +1031,63 @@ describe('storage deadlines', () => {
       delete process.env.OPENROUTER_API_KEY;
     }
   });
+});
+
+describe('import-time Redis isolation', () => {
+  it('ignores an inherited dummy REDIS_URL without constructing storage or connecting', async () => {
+    const previousUrl = process.env.REDIS_URL;
+    const previousKey = process.env.OPENROUTER_API_KEY;
+    process.env.REDIS_URL = 'redis://127.0.0.1:1/test-only-inherited-url';
+    process.env.OPENROUTER_API_KEY = 'test-provider-key';
+    const constructed = jest.fn(() => {
+      throw new Error('Unexpected real Redis construction');
+    });
+    jest.doMock('ioredis', () => ({
+      __esModule: true,
+      default: constructed,
+      Redis: constructed,
+    }));
+    const connect = jest
+      .spyOn(require('net').Socket.prototype, 'connect')
+      .mockImplementation(() => {
+        throw new Error('Unexpected socket connection');
+      });
+    let isolatedService: AiTextService;
+    let importFailure: unknown;
+    try {
+      jest.isolateModules(() => {
+        try {
+          const {
+            AiTextService: IsolatedService,
+          } = require('@gitroom/nestjs-libraries/openai/ai.text.service');
+          isolatedService = new IsolatedService();
+        } catch (error) {
+          importFailure = error;
+        }
+      });
+      expect(constructed).not.toHaveBeenCalled();
+      expect(connect).not.toHaveBeenCalled();
+      expect(importFailure).toBeUndefined();
+      await expect(
+        isolatedService.generate('org-isolated', request, [])
+      ).rejects.toMatchObject({
+        response: { code: 'AI_PROVIDER_UNAVAILABLE' },
+      });
+      expect(globalThis.fetch).not.toHaveBeenCalled();
+    } finally {
+      jest.dontMock('ioredis');
+      connect.mockRestore();
+      if (previousUrl === undefined) delete process.env.REDIS_URL;
+      else process.env.REDIS_URL = previousUrl;
+      if (previousKey === undefined) delete process.env.OPENROUTER_API_KEY;
+      else process.env.OPENROUTER_API_KEY = previousKey;
+    }
+  });
+});
+
+it('blocks TCP and TLS transports during test module import', () => {
+  expect(importTimeTransportErrors).toEqual([
+    'Unexpected outbound net.connect',
+    'Unexpected outbound tls.connect',
+  ]);
 });
