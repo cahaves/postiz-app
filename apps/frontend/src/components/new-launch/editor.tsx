@@ -29,7 +29,6 @@ import { MultiMediaComponent } from '@gitroom/frontend/components/media/media.co
 import { UpDownArrow } from '@gitroom/frontend/components/launches/up.down.arrow';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useExistingData } from '@gitroom/frontend/components/launches/helpers/use.existing.data';
-import { useCopilotAction, useCopilotReadable } from '@copilotkit/react-core';
 import { useDropzone } from 'react-dropzone';
 import { useUppyUploader } from '@gitroom/frontend/components/media/new.uploader';
 import { Dashboard } from '@uppy/react';
@@ -40,6 +39,7 @@ import {
   Extension,
   mergeAttributes,
 } from '@tiptap/react';
+import { createDocument } from '@tiptap/core';
 import Document from '@tiptap/extension-document';
 import Bold from '@tiptap/extension-bold';
 import Text from '@tiptap/extension-text';
@@ -121,8 +121,6 @@ export const EditorWrapper: FC<{
     isCreateSet,
     deleteGlobalValue,
     deleteInternalValue,
-    setGlobalValue,
-    setInternalValue,
     setInternalDelay,
     setGlobalDelay,
     internalFromAll,
@@ -155,8 +153,6 @@ export const EditorWrapper: FC<{
       isCreateSet: state.isCreateSet,
       deleteGlobalValue: state.deleteGlobalValue,
       deleteInternalValue: state.deleteInternalValue,
-      setGlobalValue: state.setGlobalValue,
-      setInternalValue: state.setInternalValue,
       setGlobalDelay: state.setGlobalDelay,
       setInternalDelay: state.setInternalDelay,
       totalChars: state.totalChars,
@@ -194,47 +190,6 @@ export const EditorWrapper: FC<{
 
     return global;
   }, [internal, global]);
-
-  const setValue = useCallback(
-    (value: string[]) => {
-      const newValue = value.map((p, index) => {
-        return {
-          id: makeId(10),
-          delay: 0,
-          ...(items?.[index]?.media
-            ? { media: items[index].media }
-            : { media: [] }),
-          content: p,
-        };
-      });
-      if (internal) {
-        return setInternalValue(current, newValue);
-      }
-
-      return setGlobalValue(newValue);
-    },
-    [internal, items]
-  );
-
-  useCopilotReadable({
-    description: 'Current content of posts',
-    value: items.map((p) => p.content),
-  });
-
-  useCopilotAction({
-    name: 'setPosts',
-    description: 'a thread of posts',
-    parameters: [
-      {
-        name: 'content',
-        type: 'string[]',
-        description: 'a thread of posts',
-      },
-    ],
-    handler: async ({ content }) => {
-      setValue(content);
-    },
-  });
 
   const changeValue = useCallback(
     (index: number) => (value: string) => {
@@ -1037,6 +992,16 @@ export const OnlyEditor = forwardRef<
       onChange?.(innerProps.editor.getHTML());
     },
   });
+
+  useEffect(() => {
+    if (!editor || editor.getHTML() === (value || '')) {
+      return;
+    }
+    const document = createDocument(value || '', editor.schema);
+    if (!editor.state.doc.eq(document)) {
+      editor.commands.setContent(document, { emitUpdate: false });
+    }
+  }, [editor, value]);
 
   useImperativeHandle(ref, () => ({
     editor,
