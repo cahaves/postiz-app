@@ -132,8 +132,7 @@ export type AiTextApplyResult =
 const expected = useLaunchStore.getState().captureAiTextSource();
 const before = useLaunchStore.getState();
 const result = useLaunchStore.getState().applyAiText(expected, [
-  { id: 'block-a', content: 'New caption
-Second line' },
+  { id: 'block-a', content: 'New caption\nSecond line' },
 ]);
 expect(result).toEqual({ applied: true });
 expect(useLaunchStore.getState().global[0]).toEqual({

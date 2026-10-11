@@ -155,7 +155,7 @@ Cancel increments request sequence before aborting, clears only that request's b
 
 ### Task 1: authenticated OpenRouter generation and server tests
 
-Own DTO, controller additions, PostsService additions, AiTextService, module registration, throttle guard, env sample, backend tests. Deliver capability plus typed generation contract, owned-channel/provider settings/length logic, safe errors, timeout/cancel/rate/concurrency bounds. Mock provider and Redis. Never write posts. Define/export the contract first so the other tasks can compile independently. Do not modify frontend.
+Own DTO, controller additions, PostsService additions, AiTextService, module registration, throttle guard, env sample, backend tests and shared root Jest harness. Deliver capability plus typed generation contract, owned-channel/provider settings/length logic, safe errors, timeout/cancel/rate/concurrency bounds. Mock provider and Redis. Never write posts. Define/export the contract first so the other tasks can compile independently. Do not modify frontend.
 
 Tests: real DTO transformation/validation and controller guards using a narrow Nest test module; missing/blank key and 403; foreign/deleted/disabled channel; malicious/unknown fields; one provider call with exact OpenRouter/model/schema/no-tools bounds; malformed/refused/truncated/too-long response; Unicode/provider counting equivalence; no secrets in prompt/response/logs; rate/concurrency isolation/release; disconnect/timeout; no post/Temporal/media calls. Use provider stubs for generic behavior and targeted Instagram 2200/2201 and Threads 500/501 fixtures without actual accounts.
 
@@ -167,7 +167,7 @@ Tests: global and override application; absent override creation; preserve every
 
 ### Task 3: inline chat and explicit native publication integration
 
-Own new assistant, ManageModal integration/removal of popup, translations, shared save result/mutex/commit bridge, frontend integration tests, test bootstrap/config and package test script. Reuse Tasks 1/2 contracts. Coordinate only interface changes; do not edit Task 1 server files or Task 2 editor/store body.
+Own new assistant, ManageModal integration/removal of popup, translations, shared save result/mutex/commit bridge, frontend integration tests and feature documentation. Task 1 owns the shared root Jest harness. Reuse Tasks 1/2 contracts. Coordinate only interface changes; do not edit Task 1 server files or Task 2 editor/store body.
 
 Tests: empty draft prompt and refinement of candidate; Write never saves; Apply/Discard; preselected now/schedule has visible channel/date summary and calls shared native validation/save exactly once; model text saying “publish” never changes intent; stale before/after editor commit/after validation aborts; correct content reaches `getAllValues` after Apply; required media/settings prevents save; schedule date preserved; republish/shortlink behavior; double submit; missing key/capability retry/503/403/timeout; cancel/retry late-response race; modal unmount; preserve other operation lock; ambiguous POST failure has no automatic retry. No real channels or provider calls.
 
