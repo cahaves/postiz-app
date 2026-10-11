@@ -196,10 +196,10 @@ export type AiSubmissionResult =
 **User steering, 11 October 2026:** Refi requested direct updates to the Cahaves fork, no PR, followed by deployment to Cahaves Primary while retaining current credentials. This supersedes the earlier PR and code-only handoff below. Complete and independently review Tasks 1–3 first, then use the deployment follow-up. Do not merge or reset the newer upstream-based main branch; deploy the reviewed v2.25-based Cahaves feature branch.
 
 - [x] Resolve each task review and collect final review package from the immutable v2.25 baseline to HEAD.
-- [ ] A fresh whole-branch reviewer checks native patterns, organization/secret boundaries, state synchronization and publication race handling against the spec.
-- [ ] Run covering tests for every final fix; run root suite once after integrated changes and record limitations without claiming real OpenRouter/provider publication.
-- [ ] Push the reviewed codex/native-ai-composer directly to the user's Cahaves fork. The stable v2.25 base already exists. Create no PR, as explicitly requested in the later steering.
-- [ ] Preserve source/worktree and meaningful evidence. Execute only the authorized Postiz deployment follow-up; never run schema push/reset/migration or merge/reset the newer fork main.
+- [x] A fresh whole-branch reviewer checks native patterns, organization/secret boundaries, state synchronization and publication race handling against the spec.
+- [x] Run covering tests for every final fix; run root suite once after integrated changes and record limitations without claiming real OpenRouter/provider publication.
+- [x] Push the reviewed codex/native-ai-composer directly to the user's Cahaves fork. The stable v2.25 base already exists. Create no PR, as explicitly requested in the later steering.
+- [x] Preserve source/worktree and meaningful evidence. Execute only the authorized Postiz deployment follow-up; never run schema push/reset/migration or merge/reset the newer fork main.
 
 ## Authorized deployment follow-up
 
@@ -209,16 +209,16 @@ Own only `Dockerfile.cahaves`, `var/docker/cahaves-start.sh`, `.github/workflows
 
 - [x] Add a Cahaves startup that starts the existing frontend/backend/orchestrator PM2 scripts and Nginx, without `prisma-db-push`, reset or schema migrations. Existing schema stays unchanged.
 - [x] Add a scoped push-triggered image workflow for `codex/native-ai-composer`, with minimum job permissions and no production credentials. Validate packaging syntax; the actual Linux build remains a rollout gate below.
-- [ ] Review the packaging diff and include it in the whole-branch review before pushing the final build commit.
+- [x] Review the packaging diff and include it in the whole-branch review before pushing the final build commit.
 
 ### Task 5: Primary rollout and verification
 
-- [ ] Snapshot sanitized container metadata and privately back up the existing server Compose/environment/access configuration, application/Temporal databases, and media. Verify the backup before replacement.
-- [ ] Preserve the exact JWT encryption key, database/Redis/Meta credentials, existing connected-channel rows, persistent volumes, domain, access gate and provider scope. Update only the Postiz image and add OpenRouter environment mappings. If the OpenRouter key is absent, report that accurately and continue deploying the built feature.
-- [ ] Download and verify the immutable AMD64 archive, transfer and load it on Primary, validate Compose without printing expanded secrets, and recreate only Postiz with `--no-deps`. Retain the previous image and configuration for immediate rollback.
-- [ ] Verify application/backend/orchestrator health, trusted HTTPS, retained connected-channel metadata and private equality checks for credentials. Compare unrelated container IDs/start/restarts/OOM/health against the pre-rollout snapshot.
-- [ ] Use a fresh isolated headless context only. Verify the deployed assistant with normal authentication where credentials are available, or report the signed-in limitation. Do not publish/schedule a real post or modify channel credentials during verification.
-- [ ] Record deployed source commit, image identity, health, key-configuration status, backup/rollback locations and any limits; push directly to the Cahaves fork and create no PR.
+- [x] Snapshot sanitized container metadata and privately back up the existing server Compose/environment/access configuration, application/Temporal databases, and media. Verify the backup before replacement.
+- [x] Preserve the exact JWT encryption key, database/Redis/Meta credentials, existing connected-channel rows, persistent volumes, domain, access gate and provider scope. Update only the Postiz image and add OpenRouter environment mappings. If the OpenRouter key is absent, report that accurately and continue deploying the built feature.
+- [x] Download and verify the immutable AMD64 archive, transfer and load it on Primary, validate Compose without printing expanded secrets, and recreate only Postiz with `--no-deps`. Retain the previous image and configuration for immediate rollback.
+- [x] Verify application/backend/orchestrator health, trusted HTTPS, retained connected-channel metadata and private equality checks for credentials. Compare unrelated container IDs/start/restarts/OOM/health against the pre-rollout snapshot.
+- [x] Use a fresh isolated headless context only. Verify the deployed assistant with normal authentication where credentials are available, or report the signed-in limitation. Do not publish/schedule a real post or modify channel credentials during verification.
+- [x] Record deployed source commit, image identity, health, key-configuration status, backup/rollback locations and any limits; push directly to the Cahaves fork and create no PR.
 
 ## Review and verification record before image build
 
@@ -238,3 +238,17 @@ The live original-image Prisma schema and reviewed source have identical SHA256 
 6. Follow the later instruction to push directly and deploy the reviewed feature branch, with no PR and no reset of newer main. A different integration preference requires a later branch merge/rebase.
 7. Build on a separate native AMD64 runner and bypass the default startup's schema push, preserving the data and previous image. Incorrect packaging requires image repair or application rollback.
 8. Deliver a checksummed one-day repository artifact because existing GitHub credentials lack package-read scopes and new GHCR packages default private. A delivery problem requires a build/download retry; no registry permission expansion is introduced.
+
+## Completed Primary rollout
+
+Deployed source `d4c9406def9ef43f6d0dc1f8554354eefab38312` directly from the Cahaves fork, with no PR. GitHub image run [38139955121](https://github.com/cahaves/postiz-app/actions/runs/38139955121) and the regular Linux build both succeeded. The 1,892,535,633-byte artifact ZIP SHA256 is `8e4501d36fa2e20229aa7efccd34848382a18034cd7129f09dcc2e0c9037a3b9`; the image archive SHA256 is `65e0284610e7a2cccfea9c81eafce1bd67d256410564fc55e4a27ba8489a206b`. Both were independently checked on Primary. Slow computer-to-server delivery was superseded by a measured bounded parallel HTTPS Range transfer using temporary private repository-artifact links, deleted after verification.
+
+Primary uses the containerd image store. The loaded manifest ID `sha256:2764bcc6d0e8de58565214a69dcf7d09757d238566d002294450a4fd0982d984` differs from the build's legacy config ID `sha256:4e564e92121638e690e860ecdc34f5f0191e050fbf99d26ae081d4e257c15493`. Direct content-store hashing proved the manifest references that exact config and its RootFS diff IDs match the inspected image. The image is AMD64, has the reviewed source labels and schema-safe command. No-network native bcrypt, DOM sanitizer, source-map, Temporal bridge and Prisma-constructor checks passed. [Docker's containerd documentation](https://docs.docker.com/engine/storage/containerd/) describes the active storage backend.
+
+Only Postiz was recreated. Final read-only verification at 13:47:11 UTC on 11 October 2026 found all four services healthy, PM2 frontend/backend/orchestrator online, zero restarts and OOM flags. Internal frontend/backend/orchestrator and trusted HTTPS login/readiness returned 200; the unauthenticated gate returned 401. All 29 other containers, including dependencies and exited jobs, retained their IDs, images, start timestamps, restart/OOM/health/status values.
+
+Every prior JWT/Meta/DB/Redis/private environment field remains equal. The sole changed old runtime field is version metadata. The two channels, Cahaves Instagram Standalone and cahavesgroup Threads, retain their stored credential fingerprint. No database schema operation or real social post was performed. The new AI endpoints are registered. OpenRouter key is absent; real generation/provider validity and signed-in assistant behavior remain unverified. A fresh isolated headless browser reached the secure login page with TLS 1.3, zero HTTP resources and page errors, and was closed.
+
+Verified private recovery configuration: `/srv/cahaves/postiz/config-backups/native-ai-rollout-2026-10-11T12-37-38Z`. Verified three database dumps and media/configuration backups: `/srv/cahaves/postiz/backups/2026-10-11T12-39-31Z`. The previous image and schema-safe rollback override are retained. Memory snapshot was 936.7 MiB of the app's 1 GiB limit, 1,068 MiB host RAM available and 1,588 MiB swap used. This confirms current readiness, not long-term load behavior.
+
+9. Verify the exact config and RootFS relationship across Docker storage representations rather than comparing unlike manifest/config identifiers. A wrong identity check risks rejecting a valid image or accepting an incorrect one; the content hashes and rollback were retained.
