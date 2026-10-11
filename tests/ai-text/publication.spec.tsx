@@ -12,7 +12,9 @@ import dayjs from 'dayjs';
 import { ManageModal } from '../../apps/frontend/src/components/new-launch/manage.modal';
 import { useLaunchStore } from '../../apps/frontend/src/components/new-launch/store';
 import { ExistingDataContextProvider } from '../../apps/frontend/src/components/launches/helpers/use.existing.data';
+import type { UseFormReturn } from 'react-hook-form';
 
+const mockLiveForms = new Map<string, UseFormReturn>();
 const mockClose = jest.fn();
 const mockToast = jest.fn();
 const mockDialog = jest.fn(async () => false);
@@ -101,11 +103,25 @@ jest.mock(
       withProvider,
       PostComment,
     } = require('../../apps/frontend/src/components/new-launch/providers/high.order.provider');
+    const { useFormContext } = require('react-hook-form');
+    const {
+      useIntegration,
+    } = require('../../apps/frontend/src/components/launches/helpers/use.integration');
     const Provider = withProvider({
       postComment: PostComment.ALL,
       minimumCharacters: [],
       maximumCharacters: 280,
-      SettingsComponent: null,
+      SettingsComponent: function SettingsFixture() {
+        const form = useFormContext();
+        const { integration } = useIntegration();
+        React.useLayoutEffect(() => {
+          mockLiveForms.set(integration.id, form);
+          return () => {
+            mockLiveForms.delete(integration.id);
+          };
+        }, [form, integration.id]);
+        return null;
+      },
     });
     return {
       ShowAllProviders: React.forwardRef((_: any, ref: any) => {
@@ -175,6 +191,7 @@ const generate = async (action = 'now') => {
 };
 beforeEach(() => {
   jest.clearAllMocks();
+  mockLiveForms.clear();
   useLaunchStore.getState().reset();
   const integration = {
     id: 'channel',
@@ -621,3 +638,147 @@ it('prevents deletion while AI publication is generating', async () => {
     )
   );
 });
+
+it.each(['channel', 'other'])(
+  'cancels when live provider settings for %s change during AI application',
+  async (changedChannel) => {
+    const other = {
+      id: 'other',
+      name: 'Other channel',
+      identifier: 'x',
+      editor: 'normal',
+    } as any;
+    useLaunchStore.setState({
+      selectedIntegrations: [
+        ...useLaunchStore.getState().selectedIntegrations,
+        { integration: other, settings: { __type: 'x' }, ref: createRef() },
+      ],
+      internal: [
+        {
+          integration: other,
+          integrationValue: [
+            { id: 'b', content: '<p>Other version</p>', delay: 2, media: [] },
+          ],
+        },
+      ],
+    });
+    mount();
+    await waitFor(() => expect(mockLiveForms.has(changedChannel)).toBe(true));
+    const stop = useLaunchStore.subscribe((state, previous) => {
+      if (
+        state.global[0]?.content === '<p>Fresh caption</p>' &&
+        previous.global[0]?.content !== '<p>Fresh caption</p>'
+      ) {
+        mockLiveForms.get(changedChannel)!.setValue('whoCanReply', 'followers');
+      }
+    });
+    try {
+      await generate();
+      await waitFor(() =>
+        expect(
+          (
+            screen.getByRole('button', {
+              name: 'Write & post now',
+            }) as HTMLButtonElement
+          ).disabled
+        ).toBe(false)
+      );
+      const state = useLaunchStore.getState();
+      const changed = state.selectedIntegrations.find(
+        (item) => item.integration.id === changedChannel
+      )!;
+      expect(changed.settings).toEqual({ __type: 'x' });
+      expect(changed.ref?.current.getValues().settings).toEqual({
+        __type: 'x',
+        whoCanReply: 'followers',
+      });
+      expect(state.global[0].content).toBe('<p>Fresh caption</p>');
+      expect(state.internal[0].integrationValue[0].content).toBe(
+        '<p>Other version</p>'
+      );
+      expect(api.mock.calls.filter(([url]) => url === '/posts')).toHaveLength(
+        0
+      );
+      await screen.findByText(/Draft changed or submission cancelled/);
+    } finally {
+      stop();
+    }
+  }
+);
+
+it.each(['global', 'channel'])(
+  'publishes only authorized %s text while retaining original live settings and other channel versions',
+  async (scope) => {
+    const other = {
+      id: 'other',
+      name: 'Other channel',
+      identifier: 'x',
+      editor: 'normal',
+    } as any;
+    useLaunchStore.setState({
+      current: scope,
+      selectedIntegrations: [
+        ...useLaunchStore.getState().selectedIntegrations,
+        { integration: other, settings: { __type: 'x' }, ref: createRef() },
+      ],
+      internal: [
+        {
+          integration: other,
+          integrationValue: [
+            {
+              id: 'b',
+              content: '<p>Other version</p>',
+              delay: 2,
+              media: [
+                {
+                  id: 'media',
+                  path: '/synthetic.png',
+                  alt: 'Existing image',
+                } as any,
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    mount();
+    await waitFor(() => expect(mockLiveForms.size).toBe(2));
+    act(() => {
+      mockLiveForms.get('channel')!.setValue('whoCanReply', 'everyone');
+      mockLiveForms.get('other')!.setValue('whoCanReply', 'followers');
+    });
+    await generate();
+    await waitFor(() =>
+      expect(api.mock.calls.filter(([url]) => url === '/posts')).toHaveLength(1)
+    );
+    const payload = JSON.parse(
+      api.mock.calls.find(([url]) => url === '/posts')[1].body
+    );
+    expect(payload.posts).toMatchObject([
+      {
+        integration: { id: 'channel' },
+        settings: { __type: 'x', whoCanReply: 'everyone' },
+        value: [
+          { id: 'a', content: '<p>Fresh caption</p>', delay: 7, image: [] },
+        ],
+      },
+      {
+        integration: { id: 'other' },
+        settings: { __type: 'x', whoCanReply: 'followers' },
+        value: [
+          {
+            id: 'b',
+            content: '<p>Other version</p>',
+            delay: 2,
+            image: [
+              { id: 'media', path: '/synthetic.png', alt: 'Existing image' },
+            ],
+          },
+        ],
+      },
+    ]);
+    expect(useLaunchStore.getState().global[0].content).toBe(
+      scope === 'global' ? '<p>Fresh caption</p>' : '<p>Old caption</p>'
+    );
+  }
+);

@@ -671,7 +671,8 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         expected !== (await capturePublication())
       )
         return { status: 'cancelled' };
-      const intended = JSON.parse(JSON.parse(expected).draft);
+      const publication = JSON.parse(expected);
+      const intended = JSON.parse(publication.draft);
       const override = intended.internal.find(
         (item: any) => item.id === candidate.source.scope
       );
@@ -690,6 +691,30 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
           id: candidate.source.scope,
           integrationValue: blocks,
         });
+      const textById = new Map<string, string>(
+        blocks.map((block: { id: string; content: string }) => [
+          block.id,
+          block.content,
+        ])
+      );
+      const intendedPublication = JSON.stringify({
+        draft: JSON.stringify(intended),
+        values: publication.values.map((post: any) => {
+          const applies =
+            candidate.source.scope === 'global'
+              ? !intended.internal.some((item: any) => item.id === post.id)
+              : candidate.source.scope === post.id;
+          return applies
+            ? {
+                ...post,
+                values: post.values.map((block: any) => ({
+                  ...block,
+                  content: textById.get(block.id),
+                })),
+              }
+            : post;
+        }),
+      });
       let applied = false;
       // Commit subscribers before reading native provider refs; a store write alone
       // leaves their imperative handles pointing at the previous render.
@@ -705,6 +730,9 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
       )
         return { status: 'cancelled' };
       const committed = await capturePublication();
+      // Live form settings can change without a Zustand update. Only the
+      // authorized text may differ from the original provider snapshot.
+      if (committed !== intendedPublication) return { status: 'cancelled' };
       const values = JSON.parse(committed).values;
       const state = useLaunchStore.getState();
       if (
@@ -724,7 +752,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         })
       )
         return { status: 'cancelled' };
-      return schedule(intent, committed, signal)();
+      return schedule(intent, intendedPublication, signal)();
     },
     [dummy, addEditSets, capturePublication, schedule, draftSignature]
   );
