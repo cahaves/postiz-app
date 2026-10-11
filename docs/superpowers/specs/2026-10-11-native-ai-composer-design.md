@@ -161,7 +161,7 @@ Tests: real DTO transformation/validation and controller guards using a narrow N
 
 ### Task 2: atomic draft text application and Tiptap sync
 
-Own store action, editor synchronization/removal of old composer action/readable, and focused store/editor tests. Implement against agreed text-only contract; no network/UI panel work. Coordinate serialization behavior with Task 1; if a shared helper is needed, one owner creates it and the other imports it.
+Own store action, editor synchronization/removal of old composer action/readable, focused store/editor tests, and the controller-approved optional-canvas jsdom test-environment adapter. The adapter is scoped to environment construction and restores loader behavior in finally; production dependency state is unchanged. Implement against agreed text-only contract; no network/UI panel work. Coordinate serialization behavior with Task 1; if a shared helper is needed, one owner creates it and the other imports it.
 
 Tests: global and override application; absent override creation; preserve every non-text field/object identity; no partial mutation on invalid blocks; stale content, channel switch, selected-set changes, ordered ID changes/deletion with reused IDs; literal HTML/newlines/emoji; real editor displays external update; ordinary typing keeps caret and causes no echo loop. Compare full before/after fixture state, including media metadata/settings refs/date/repeater. Test editor mode constraints actually supported by the existing composer.
 

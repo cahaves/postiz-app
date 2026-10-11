@@ -105,6 +105,8 @@ The test fixture is a supplied owned normal-editor channel, one block id block-a
 - Modify: apps/frontend/src/components/new-launch/store.ts
 - Modify: apps/frontend/src/components/new-launch/editor.tsx
 - Create: tests/ai-text/store.spec.ts and tests/ai-text/editor.spec.tsx
+- Create: tests/ai-text/jsdom.environment.cjs (scoped optional-canvas fallback for text-only tests)
+- Modify: tests/ai-text/jest.frontend.config.cjs (test-only environment selection)
 
 **Interfaces:**
 - Consumes: AiTextBlock type and plainTextToPostHtml from Task 1; current launch store and normal editor.
@@ -126,7 +128,7 @@ export type AiTextApplyResult =
 // applyAiText(expected: AiTextSourceSnapshot, blocks: AiTextBlock[]): AiTextApplyResult
 ```
 
-- [ ] **Step 1: Read installed Tiptap source/docs and write failing store/editor tests.** Read Next use-client/client component docs and Tiptap setContent implementation. Keep the supported hook-based editor API because it is an existing component. Seed an actual store with two selected channels, source blocks, delays, media with alt/thumbnail metadata, tags/date/repeater and provider refs. The critical regression assertion is:
+- [x] **Step 1: Read installed Tiptap source/docs and write failing store/editor tests.** Read Next use-client/client component docs and Tiptap setContent implementation. Keep the supported hook-based editor API because it is an existing component. Seed an actual store with two selected channels, source blocks, delays, media with alt/thumbnail metadata, tags/date/repeater and provider refs. The critical regression assertion is:
 
 ```ts
 const expected = useLaunchStore.getState().captureAiTextSource();
@@ -144,13 +146,13 @@ expect(useLaunchStore.getState().selectedIntegrations).toBe(before.selectedInteg
 
 Run focused tests via pnpm test --runInBand --testPathPattern='store|editor' and capture expected failure before implementation.
 
-- [ ] **Step 2: Add one atomic apply action and monotonically incremented modal session.** Capture scope/editor/full ordered selected IDs, override presence and ordered source IDs/raw text. Compare the live state in one Zustand update. Reject all invalid output together and return stale/invalid without mutation. On success map current live blocks with object spread and change content only; clone inherited global blocks into a new specific override once when needed, without toggling other overrides. Preserve all unrelated state and object identities. Increment aiTextSession on reset so old requests never match a reopened draft.
+- [x] **Step 2: Add one atomic apply action and monotonically incremented modal session.** Capture scope/editor/full ordered selected IDs, override presence and ordered source IDs/raw text. Compare the live state in one Zustand update. Reject all invalid output together and return stale/invalid without mutation. On success map current live blocks with object spread and change content only; clone inherited global blocks into a new specific override once when needed, without toggling other overrides. Preserve all unrelated state and object identities. Increment aiTextSession on reset so old requests never match a reopened draft.
 
-- [ ] **Step 3: Synchronize external text into the real editor and retire unsafe composer Copilot action.** Use the documented Tiptap setContent option emitUpdate:false only when value differs from the editor's current representation, with effect dependencies preventing reapplication on ordinary rerenders. Preserve visible state and caret during typing; do not remount via replacement IDs. Remove the old composer's setPosts/readable only, leaving native standalone agent/AI media unchanged.
+- [x] **Step 3: Synchronize external text into the real editor and retire unsafe composer Copilot action.** Use the documented Tiptap setContent option emitUpdate:false only when value differs from the editor's current representation, with effect dependencies preventing reapplication on ordinary rerenders. Preserve visible state and caret during typing; do not remount via replacement IDs. Remove the old composer's setPosts/readable only, leaving native standalone agent/AI media unchanged.
 
-- [ ] **Step 4: Cover stale/invalid applications and real editor behavior.** Test global/override/inherited scope, changed text/current scope/selected channels/order, duplicate/missing/extra IDs, deletion with reused IDs, modal reset and all-or-none mutation. Preserve current media/settings/date changes on text-only apply. Render the actual editor and verify applied literal markup/newlines are visible as text, external update does not emit an echo loop, and ordinary typing keeps caret. Do not assert a mocked editor's existence.
+- [x] **Step 4: Cover stale/invalid applications and real editor behavior.** Test global/override/inherited scope, changed text/current scope/selected channels/order, duplicate/missing/extra IDs, deletion with reused IDs, modal reset and all-or-none mutation. Preserve current media/settings/date changes on text-only apply. Render the actual editor and verify applied literal markup/newlines are visible as text, external update does not emit an echo loop, and ordinary typing keeps caret. Do not assert a mocked editor's existence.
 
-- [ ] **Step 5: Run root suite and scoped typing checks, commit and report.** Run pnpm test --runInBand, the relevant frontend TypeScript check and git diff --check. Record pre-existing errors separately. Commit owned files only, write RED/GREEN evidence/report, and await controller review before Task 3.
+- [x] **Step 5: Run root suite and scoped typing checks, commit and report.** Run pnpm test --runInBand, the relevant frontend TypeScript check and git diff --check. Record pre-existing errors separately. Commit owned files only, write RED/GREEN evidence/report, and await controller review before Task 3.
 
 ### Task 3: Inline conversation and explicit native publish/schedule integration
 
