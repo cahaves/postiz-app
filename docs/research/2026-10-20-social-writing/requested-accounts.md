@@ -26,7 +26,9 @@ Only one old Instagram post was exposed for Sumopodcloud. Monveo's two sampled b
 
 ## Preferences saved in Postiz
 
-[cahaves-default-profile.json](cahaves-default-profile.json) was saved and read back on the Cahaves workspace at revision 2 on 20 October 2026. It keeps Indonesian and English available, uses a friendly tone and applies Cloud or Hisabin notes only when that product is named in the brief. A problem-first structure applies to a problem-oriented brief, leaving announcements and replies free to use an appropriate structure. Brand facts and approved examples remain empty because the research does not establish Cahaves product claims or authorize copying competitor posts.
+[cahaves-default-profile.json](cahaves-default-profile.json) was updated and read back on the Cahaves workspace at revision 3 on 20 October 2026. At Refi's request, it now gives distinct Indonesian and English guidance: relaxed everyday Indonesian with familiar technical terms, and plain conversational English with natural contractions. It follows the requested language, or the brief's language when unspecified, and keeps languages separate unless bilingual copy is requested. These are editorial preferences, not measured performance claims.
+
+The profile uses a friendly tone and applies Cloud or Hisabin notes only when that product is named in the brief. A problem-first structure applies to a problem-oriented brief, leaving announcements and replies free to use an appropriate structure. Brand facts and approved examples remain empty because the research does not establish Cahaves product claims or authorize copying competitor posts.
 
 In Indonesian, preserve the author's established pronouns and use familiar technical terms when helpful. Do not automatically add gua, lu, kak or exaggerated slang. In English, use ordinary wording rather than literal translations of Indonesian address terms or particles. These are editorial choices supported by the writing examples, not measured language-performance rules.
 
