@@ -145,6 +145,59 @@ it('refines the candidate and discards without changing the draft', async () => 
   expect(useLaunchStore.getState().global[0].content).toBe('');
 });
 
+it.each([
+  ['threads', false, 'stored'],
+  ['threads', true, 'stored'],
+  ['threads', false, 'form'],
+  ['threads', true, 'form'],
+  ['x', true, 'form'],
+])(
+  'keeps %s finisher=%s in native %s settings without sending it to AI',
+  async (identifier, active, source) => {
+    const selected = useLaunchStore.getState().selectedIntegrations[0];
+    const providerSettings =
+      identifier === 'x' ? { who_can_reply_post: 'everyone' } : {};
+    const settings = {
+      __type: identifier,
+      ...providerSettings,
+      active_thread_finisher: active,
+      thread_finisher: 'A supplied ending that belongs to native publication.',
+    };
+    const original = JSON.parse(JSON.stringify(settings));
+    const form = { getValues: () => ({ settings }) };
+    useLaunchStore.setState({
+      selectedIntegrations: [
+        {
+          ...selected,
+          integration: { ...selected.integration, identifier },
+          settings: source === 'stored' ? settings : {},
+          ...(source === 'form' ? { ref: { current: form } as any } : {}),
+        },
+      ],
+    });
+    const before = useLaunchStore.getState().captureAiTextSource();
+    mount();
+    await send();
+    await screen.findByLabelText('Suggested text');
+    const payload = JSON.parse(
+      api.mock.calls.find(([url]) => url === '/posts/ai-text')[1].body
+    );
+    expect(payload.channels).toEqual([
+      { integrationId: 'channel', settings: providerSettings },
+    ]);
+    expect(useLaunchStore.getState().captureAiTextSource()).toEqual(before);
+    fireEvent.click(screen.getByRole('button', { name: 'Apply to draft' }));
+    const retained = useLaunchStore.getState().selectedIntegrations[0];
+    expect(
+      source === 'form'
+        ? retained.ref.current.getValues().settings
+        : retained.settings
+    ).toEqual(original);
+    expect(settings).toEqual(original);
+    expect(submit).not.toHaveBeenCalled();
+  }
+);
+
 it('blocks blank prompts and exposes missing configuration with retry', async () => {
   const base = api.getMockImplementation()!;
   api.mockImplementation(async () =>

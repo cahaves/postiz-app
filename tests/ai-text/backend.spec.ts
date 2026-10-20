@@ -273,6 +273,28 @@ describe('generation scope and native limits', () => {
     ).rejects.toMatchObject({ response: { code: 'AI_INVALID_INPUT' } });
     expect(globalThis.fetch).not.toHaveBeenCalled();
   });
+  it.each([
+    { accessToken: 'injected' },
+    { active_thread_finisher: false, thread_finisher: 'Native ending' },
+  ])(
+    'rejects settings without a provider DTO before generation: %j',
+    async (settings) => {
+      const original = provider.dto;
+      provider.dto = undefined as never;
+      try {
+        await expect(
+          postsService().generateAiText('org-a', {
+            ...request,
+            channels: [{ integrationId: 'channel-a', settings }],
+          })
+        ).rejects.toMatchObject({ response: { code: 'AI_INVALID_INPUT' } });
+        expect(globalThis.fetch).not.toHaveBeenCalled();
+        expect(writes).not.toHaveBeenCalled();
+      } finally {
+        provider.dto = original;
+      }
+    }
+  );
   it.each([2200, 2201])(
     'applies Instagram native limit at %i UTF-16 units',
     async (size) => {

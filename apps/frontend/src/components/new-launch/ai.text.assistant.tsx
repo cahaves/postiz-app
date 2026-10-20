@@ -217,8 +217,12 @@ export const AiTextAssistant = ({
               ).trimEnd(),
             })),
           channels: channels.map(({ integration, settings, ref }) => {
-            const { __type, ...safeSettings } =
-              ref?.current?.getValues()?.settings || settings || {};
+            const {
+              __type,
+              active_thread_finisher,
+              thread_finisher,
+              ...safeSettings
+            } = ref?.current?.getValues()?.settings || settings || {};
             return { integrationId: integration.id, settings: safeSettings };
           }),
           history: history.slice(-6),
