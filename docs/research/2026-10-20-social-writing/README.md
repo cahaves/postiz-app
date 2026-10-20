@@ -2,7 +2,7 @@
 
 Observed 20 October 2026. The recommendation is a **friendly, specific and useful voice**, with a relevant product mention when the brief calls for it. It is an editable starting point for the requested soft-promotion use case, not a statistically identified engagement winner.
 
-We inspected 18 public posts and four reply examples using fresh anonymous headless Chromium sessions. The sample includes Indonesian ERP founder Nasihun, a technical-interest account, Paper, Buffer and Kit founder Nathan Barry. Barry's two examples promote a book, so they are adjacent founder-marketing evidence. We inspected captions and exposed comments; we did not fully review every carousel or video. No personal browser, private session or credentials were used.
+The initial sample inspected 18 public posts and four reply examples using fresh anonymous headless Chromium sessions. A [follow-up study of sumopodcloud, monveo.app and shobrunjb](requested-accounts.md) adds 22 posts and their reply context, bringing the research to 40 public posts. The sample includes Indonesian ERP founder Nasihun, a technical-interest account, Paper, Buffer and Kit founder Nathan Barry. Barry's two examples promote a book, so they are adjacent founder-marketing evidence. We inspected captions and exposed comments; we did not fully review every carousel or video. No personal browser, private session or credentials were used.
 
 ![Observed likes and comments, grouped by account and platform](observed-interactions.png)
 
@@ -18,6 +18,10 @@ The chart uses different panel scales. These are snapshots, not engagement rates
 | Nathan Barry: [Oct 18 book Reel](https://www.instagram.com/nathanbarry/reel/DepHdr0g8HX/) versus [Oct 19 book Reel](https://www.instagram.com/nathanbarry/reel/DeroyWAguIC/) | 30 / 22 versus 12 / 1 | At least six exposed comments on the first repeat editing-service promotions. Raw comment totals are not a clean measure of useful discussion. |
 
 Buffer's [Threads case study](https://www.threads.com/@buffer/post/DecDLbmIPAc) has one visible reply, which is its own follow-up link. Its [contest](https://www.threads.com/@buffer/post/DehGJAXEUrD) has three reposts, not three replies. These distinctions are preserved instead of treating every displayed number as audience engagement.
+
+## The accounts requested for Cahaves Cloud and Hisabin
+
+The [additional study and graph](requested-accounts.md) distinguish a cloud operator's practical voice, a product brand's audience questions, and a founder's personal product and support stories. The [editable Cahaves profile](cahaves-default-profile.json) applies those patterns only to the relevant product brief and leaves facts and approved examples blank. Its live installation is recorded in the [deployment report](../../deployment/cahaves-writing-personalization.md).
 
 ## Defaults implemented in the assistant
 

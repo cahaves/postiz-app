@@ -1,0 +1,424 @@
+{
+  "observed_date": "2026-10-20",
+  "note": "Normalized presentation data; primary source provenance remains in the two observations JSON files. Null counts are not zero. Rounded displays stay rounded.",
+  "posts": [
+    {
+      "id": "S01",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/DetBC_vlI_V",
+      "date": "2026-10-20",
+      "observed": "2026-10-20T05:58:55.283Z",
+      "topic": "Tickets release",
+      "likes": {
+        "value": 7,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 4,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S02",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/DesWndxExJ0",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:58:53.045Z",
+      "topic": "Remaining promo quota",
+      "likes": {
+        "value": null,
+        "display": null,
+        "precision": "not_visible"
+      },
+      "responses": {
+        "value": null,
+        "display": null,
+        "precision": "not_visible"
+      }
+    },
+    {
+      "id": "S03",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/DerQd9-lCLe",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:58:10.284Z",
+      "topic": "Region availability",
+      "likes": {
+        "value": 6,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 4,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S04",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/DerLsfKlCbW",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:58:55.093Z",
+      "topic": "Promotion uptake",
+      "likes": {
+        "value": 2,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 4,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S05",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/Deq2xR4lExI",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:58:10.745Z",
+      "topic": "Reseller explanation",
+      "likes": {
+        "value": 25,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 9,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S06",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/DeqyEKTFHMU",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:58:01.910Z",
+      "topic": "VPS price offer",
+      "likes": {
+        "value": 85,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 72,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S07",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/DeqnezYFP34",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:58:02.466Z",
+      "topic": "Trademark milestone",
+      "likes": {
+        "value": 311,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 54,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S08",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/Dd7lXDwEyuL",
+      "date": "2026-10-01",
+      "observed": "2026-10-20T05:57:24.085Z",
+      "topic": "Older VPS offer",
+      "likes": {
+        "value": 53,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 34,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S09",
+      "account": "sumopodcloud",
+      "platform": "threads",
+      "url": "https://www.threads.com/@sumopodcloud/post/DdcjgX4k2xo",
+      "date": "2026-09-18",
+      "observed": "2026-10-20T05:58:02.674Z",
+      "topic": "WhatsApp API",
+      "likes": {
+        "value": 25,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 29,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "S10",
+      "account": "sumopodcloud",
+      "platform": "instagram",
+      "url": "https://www.instagram.com/sumopodcloud/p/DKQngFNycnw/",
+      "date": "2025-05-30",
+      "observed": "2026-10-20T05:58:10.144Z",
+      "topic": "Introduction (2025)",
+      "likes": {
+        "value": 10,
+        "display": null,
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 0,
+        "display": null,
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "B1",
+      "account": "monveo.app",
+      "platform": "threads",
+      "url": "https://www.threads.com/@monveo.app/post/Den442ciYBc",
+      "date": "2026-10-18",
+      "observed": "2026-10-20T05:57:32.712Z",
+      "topic": "Windfall poll",
+      "likes": {
+        "value": 94,
+        "display": "94",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 136,
+        "display": "136",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "B2",
+      "account": "monveo.app",
+      "platform": "threads",
+      "url": "https://www.threads.com/@monveo.app/post/DetCenPifr9",
+      "date": "2026-10-20",
+      "observed": "2026-10-20T05:57:32.589Z",
+      "topic": "Money-choice poll",
+      "likes": {
+        "value": 3,
+        "display": "3",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 11,
+        "display": "11",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "B3",
+      "account": "monveo.app",
+      "platform": "threads",
+      "url": "https://www.threads.com/@monveo.app/post/DemEC11iZ4-",
+      "date": "2026-10-17",
+      "observed": "2026-10-20T05:57:32.504Z",
+      "topic": "Emergency savings",
+      "likes": {
+        "value": 2,
+        "display": "2",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": null,
+        "display": null,
+        "precision": "not_visible"
+      }
+    },
+    {
+      "id": "B4",
+      "account": "monveo.app",
+      "platform": "threads",
+      "url": "https://www.threads.com/@monveo.app/post/Des1gDeG4xN",
+      "date": "2026-10-20",
+      "observed": "2026-10-20T05:57:36.342Z",
+      "topic": "News and cash flow",
+      "likes": {
+        "value": null,
+        "display": null,
+        "precision": "not_visible"
+      },
+      "responses": {
+        "value": null,
+        "display": null,
+        "precision": "not_visible"
+      }
+    },
+    {
+      "id": "B5",
+      "account": "monveo.app",
+      "platform": "instagram",
+      "url": "https://www.instagram.com/monveo.app/p/Des1liikzkr/",
+      "date": "2026-10-20",
+      "observed": "2026-10-20T05:57:36.405Z",
+      "topic": "News and cash flow",
+      "likes": {
+        "value": 0,
+        "display": "0",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 0,
+        "display": "0",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "B6",
+      "account": "monveo.app",
+      "platform": "instagram",
+      "url": "https://www.instagram.com/monveo.app/reel/DeqoGshCVNL/",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:57:35.849Z",
+      "topic": "Everyday analogy",
+      "likes": {
+        "value": 0,
+        "display": "0",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 0,
+        "display": "0",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "P1",
+      "account": "shobrunjb",
+      "platform": "instagram",
+      "url": "https://www.instagram.com/shobrunjb/reel/DdfjN7pTiDo/",
+      "date": "2026-09-20",
+      "observed": "2026-10-20T05:57:43.839Z",
+      "topic": "Money-management Reel",
+      "likes": {
+        "value": 88,
+        "display": "88",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 13,
+        "display": "13",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "P2",
+      "account": "shobrunjb",
+      "platform": "instagram",
+      "url": "https://www.instagram.com/shobrunjb/reel/DeY1lhRTD29/",
+      "date": "2026-10-12",
+      "observed": "2026-10-20T05:57:39.299Z",
+      "topic": "Budgeting pain Reel",
+      "likes": {
+        "value": 53,
+        "display": "53",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 2,
+        "display": "2",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "P3",
+      "account": "shobrunjb",
+      "platform": "threads",
+      "url": "https://www.threads.com/@shobrunjb/post/Ddn2xIyGUyO",
+      "date": "2026-09-23",
+      "observed": "2026-10-20T05:58:55.754Z",
+      "topic": "Feature and feedback",
+      "likes": {
+        "value": 560,
+        "display": "560",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 54,
+        "display": "54",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "P4",
+      "account": "shobrunjb",
+      "platform": "threads",
+      "url": "https://www.threads.com/@shobrunjb/post/DdqEQYbGSYQ",
+      "date": "2026-09-24",
+      "observed": "2026-10-20T05:58:56.553Z",
+      "topic": "Privacy response",
+      "likes": {
+        "value": 86,
+        "display": "86",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 27,
+        "display": "27",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "P5",
+      "account": "shobrunjb",
+      "platform": "threads",
+      "url": "https://www.threads.com/@shobrunjb/post/DerKEfgE_wR",
+      "date": "2026-10-19",
+      "observed": "2026-10-20T05:58:54.859Z",
+      "topic": "Fix update",
+      "likes": {
+        "value": 3,
+        "display": "3",
+        "precision": "exact"
+      },
+      "responses": {
+        "value": 4,
+        "display": "4",
+        "precision": "exact"
+      }
+    },
+    {
+      "id": "P6",
+      "account": "shobrunjb",
+      "platform": "threads",
+      "url": "https://www.threads.com/@shobrunjb/post/DcK2t9qmfcF",
+      "date": "2026-08-18",
+      "observed": "2026-10-20T05:59:01.414Z",
+      "topic": "Launch milestone",
+      "likes": {
+        "value": null,
+        "display": "1.4K",
+        "precision": "rounded"
+      },
+      "responses": {
+        "value": 77,
+        "display": "77",
+        "precision": "exact"
+      }
+    }
+  ]
+}

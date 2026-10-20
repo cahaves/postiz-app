@@ -1,0 +1,9 @@
+{
+  "language": "auto",
+  "tone": "friendly",
+  "brandName": "Cahaves",
+  "audience": "Follow the product and audience named in the current brief. For Cahaves Cloud, speak to builders and small teams. For Hisabin, address the people and money-related workflow described in the brief without assuming it is a personal-budgeting app.",
+  "brandFacts": "",
+  "voiceNotes": "Use a helpful, specific voice in Indonesian or English, following the brief. In Indonesian, use everyday wording and useful technical terms; preserve the author's established saya, aku or kami. Do not impose gue/gua/lu, kak, slang, emojis or humor. In English, use plain language and natural phrasing, without translating Indonesian particles literally.\nFor a Cahaves Cloud brief, sound like a cloud operator talking to builders. Start from a concrete task, change or current limitation. Explain the use, where to find it, and material conditions when those facts are supplied. State billing periods, renewal rules and extra fees when relevant and verified.\nFor a problem-oriented Hisabin brief, start from a specific everyday money or admin problem and explain one relevant product action using supplied facts. Keep the tone practical and nonjudgmental. Do not assume Monveo's audience or features apply to Hisabin.\nUse a founder's first-person experience only when the author and that real experience are supplied. Use the brand voice otherwise. Mention the product when it helps; avoid forced hooks, hypothetical windfalls, keyword-comment requests and a sales CTA on every post.\nFor replies, answer the actual comment first. Acknowledge reported problems and give a verified next step. Do not invent support contacts, privacy assurances, stock, discounts, partnerships, customer numbers, benchmarks, savings or roadmap dates. Research references guide communication patterns only; their claims and personal stories never become Cahaves facts.",
+  "examples": []
+}

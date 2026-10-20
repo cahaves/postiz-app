@@ -1,0 +1,1547 @@
+{
+  "studyTitle": "Monveo and Shobrun reference study for future Hisabin writing",
+  "studyDate": "2026-10-20",
+  "scope": "Twelve purposively selected public posts: six brand and six personal Monveo-related posts. Hisabin only; not a Cahaves Cloud persona. One additional register example is qualitative context.",
+  "method": {
+    "access": "Separate newly launched headless Chromium contexts, English UI, UTC timezone. No personal browser, cookies, account login or stored session used.",
+    "sampling": "Recent brand posts plus relevant personal product announcements, promotions, criticism response and support. Not random or representative.",
+    "counts": "Live public DOM or explicitly labeled public Open Graph metadata, not analytics APIs or collector snapshots. Blank is null. Rounded displays retained without invented exact values.",
+    "replyScope": "Only replies loaded before Related threads or Instagram recommendations. Counts can include author and nested replies. No full pagination; absence in loaded subset is not absence overall.",
+    "mediaScope": "Captions, labels and loaded comments/replies. Full videos and audio were not evaluated.",
+    "rawEvidenceFiles": [
+      "/tmp/monveo-posts-raw.json",
+      "/tmp/monveo-founder-extra-raw.json",
+      "/tmp/monveo-profiles-raw.json"
+    ],
+    "noCausalInference": true,
+    "noEngagementRates": true
+  },
+  "identity": {
+    "brand": {
+      "website": "https://monveo.app/",
+      "websiteRequested": "https://www.monveo.site/",
+      "websiteObservedAtUTC": "2026-10-20T05:56:45.637Z",
+      "instagram": "https://www.instagram.com/monveo.app/",
+      "threads": "https://www.threads.com/@monveo.app",
+      "evidence": "Brand Instagram links to monveo.site, which redirects to monveo.app. Site and profiles identify an expense/personal-finance app. Product claims are not audited."
+    },
+    "personal": {
+      "name": "Shobrun Bagastio",
+      "instagram": "https://www.instagram.com/shobrunjb/",
+      "threads": "https://www.threads.com/@shobrunjb",
+      "ownArticle": "https://shobrunjb.com/blog/designer-to-ai-builder",
+      "articlePublicationDate": "2026-10-17",
+      "articleObservedDate": "2026-10-20",
+      "association": "Own article states that he built Monveo; his social posts identify himself as its builder, link the product, and Instagram labels posts coauthored with monveo.app. This supports builder association; it does not establish a legal company title.",
+      "legacyHandleNote": "Product website still links @byshobrun. Shobrun’s launch reply says the old account was suspended. Suspension is his report, not independently confirmed."
+    },
+    "profileSnapshots": [
+      {
+        "url": "https://www.threads.com/@monveo.app",
+        "observedAtUTC": "2026-10-20T05:56:46.105Z",
+        "followers": {
+          "liveUI": 98,
+          "publicOG": 97
+        }
+      },
+      {
+        "url": "https://www.instagram.com/monveo.app/",
+        "observedAtUTC": "2026-10-20T05:56:45.170Z",
+        "followers": {
+          "liveUI": 22,
+          "publicOG": 22
+        }
+      },
+      {
+        "url": "https://www.threads.com/@shobrunjb",
+        "observedAtUTC": "2026-10-20T05:56:45.947Z",
+        "followers": {
+          "liveUI": 1452,
+          "publicOGDisplay": "1.5K"
+        }
+      },
+      {
+        "url": "https://www.instagram.com/shobrunjb/",
+        "observedAtUTC": "2026-10-20T05:56:45.232Z",
+        "followers": {
+          "liveUI": 1917,
+          "publicOG": 1917
+        }
+      }
+    ],
+    "profileDiscrepancies": [
+      "Brand Threads follower count: UI 98 versus metadata 97.",
+      "Brand Instagram following: UI 9 versus metadata 10.",
+      "Personal Instagram following: UI 1781 versus metadata 1821.",
+      "Displayed product user counts differ between profiles and site; all are self-reported and are not used as verified business metrics."
+    ]
+  },
+  "posts": [
+    {
+      "id": "B1",
+      "account": "monveo.app",
+      "accountRole": "brand",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@monveo.app/post/Den442ciYBc",
+      "publishedAtUTC": "2026-10-18T05:04:13.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "2d",
+          "datetime": "2026-10-18T05:04:13.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:57:32.712Z",
+      "language": "Indonesian",
+      "type": "hypothetical discussion, no direct product promotion",
+      "paraphrase": "Asks how readers would allocate an unexpected Rp200 million under a secrecy constraint.",
+      "opening": "Hypothetical money windfall",
+      "register": "Casual kamu, abbreviated yg, informal money/family vocabulary",
+      "CTA": "Choose one option in a reply",
+      "features": [
+        "choice list",
+        "single question",
+        "no product claim"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 94,
+          "display": "94",
+          "label": "Like",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "replies": {
+          "value": 136,
+          "display": "136",
+          "label": "Comment",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "reposts": {
+          "value": 1,
+          "display": "1",
+          "label": "Repost",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "Share",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": null,
+          "display": "2.4K",
+          "label": "views",
+          "precision": "rounded",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 14,
+        "visibleOwnOrBrandReplyPostsCount": 0,
+        "summary": "Fourteen loaded responses mainly choose debt repayment, housing or family priorities. No author reply appears in this loaded subset. These are hypothetical preferences, not product adoption evidence.",
+        "examples": [
+          {
+            "canonicalURL": "https://www.threads.com/@fadhillah_batubara/post/Den6SGnAU72",
+            "account": "fadhillah_batubara",
+            "role": "audience",
+            "classification": "choice response",
+            "paraphrase": "Chooses debt and housing obligations.",
+            "publishedAtUTC": "2026-10-18T05:16:11.000Z",
+            "observedAtUTC": "2026-10-20T05:57:32.712Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@gavey_0225/post/Den-tJok0LD",
+            "account": "gavey_0225",
+            "role": "audience",
+            "classification": "choice response",
+            "paraphrase": "Chooses telling parents despite the hypothetical condition.",
+            "publishedAtUTC": "2026-10-18T05:54:50.000Z",
+            "observedAtUTC": "2026-10-20T05:57:32.712Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          }
+        ]
+      },
+      "limitations": [],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "B2",
+      "account": "monveo.app",
+      "accountRole": "brand",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@monveo.app/post/DetCenPifr9",
+      "publishedAtUTC": "2026-10-20T05:04:12.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "53m",
+          "datetime": "2026-10-20T05:04:12.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:57:32.589Z",
+      "language": "Indonesian",
+      "type": "hypothetical discussion, no direct product promotion",
+      "paraphrase": "Asks how readers would spend Rp30 million within a week across family, work and learning options.",
+      "opening": "Time-limited hypothetical money choice",
+      "register": "Casual kamu, ga, yg and family vocabulary",
+      "CTA": "Give a one-word choice",
+      "features": [
+        "choice list",
+        "one response requested",
+        "brand follow-up question"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 3,
+          "display": "3",
+          "label": "Like",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "replies": {
+          "value": 11,
+          "display": "11",
+          "label": "Comment",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "Repost",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "Share",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": 168,
+          "display": "168",
+          "label": "views",
+          "precision": "exact",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 11,
+        "visibleOwnOrBrandReplyPostsCount": 1,
+        "summary": "Eleven loaded reply posts include one brand follow-up asking why. The respondent then gives personal context. Other replies choose family, work equipment or alternatives to the listed options. No visible product trial report.",
+        "examples": [
+          {
+            "canonicalURL": "https://www.threads.com/@monveo.app/post/DetEqHzkp5q",
+            "account": "monveo.app",
+            "role": "author brand",
+            "classification": "follow-up question",
+            "paraphrase": "Asks for the reason behind a reader choosing parents.",
+            "publishedAtUTC": "2026-10-20T05:23:03.000Z",
+            "observedAtUTC": "2026-10-20T05:57:32.589Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@iwe_devhani/post/DetFu8fIyzC",
+            "account": "iwe_devhani",
+            "role": "audience",
+            "classification": "explanation",
+            "paraphrase": "Explains a family motivation; personal details omitted.",
+            "publishedAtUTC": "2026-10-20T05:32:27.000Z",
+            "observedAtUTC": "2026-10-20T05:57:32.589Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@djokomueller/post/DetDgpiHYlW",
+            "account": "djokomueller",
+            "role": "audience",
+            "classification": "choice response",
+            "paraphrase": "Chooses a work laptop.",
+            "publishedAtUTC": "2026-10-20T05:13:01.000Z",
+            "observedAtUTC": "2026-10-20T05:57:32.589Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          }
+        ]
+      },
+      "limitations": [],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "B3",
+      "account": "monveo.app",
+      "accountRole": "brand",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@monveo.app/post/DemEC11iZ4-",
+      "publishedAtUTC": "2026-10-17T12:03:09.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "2d",
+          "datetime": "2026-10-17T12:03:09.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:57:32.504Z",
+      "language": "Indonesian",
+      "type": "problem-oriented discussion, no direct product promotion",
+      "paraphrase": "Raises the temptation to spend emergency savings during sale events and asks how readers separate the money.",
+      "opening": "Everyday saving difficulty",
+      "register": "Casual kamu, ga, simpen, share dong",
+      "CTA": "Share a method",
+      "features": [
+        "concrete everyday friction",
+        "multiple options"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 2,
+          "display": "2",
+          "label": "Like",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "replies": {
+          "value": null,
+          "display": null,
+          "label": "Comment",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "Repost",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "Share",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": 97,
+          "display": "97",
+          "label": "views",
+          "precision": "exact",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 0,
+        "visibleOwnOrBrandReplyPostsCount": 0,
+        "summary": "No replies loaded before Related threads. The Comment control has no number, so the total remains null.",
+        "examples": []
+      },
+      "limitations": [],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "B4",
+      "account": "monveo.app",
+      "accountRole": "brand",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@monveo.app/post/Des1gDeG4xN",
+      "publishedAtUTC": "2026-10-20T03:11:03.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "2h",
+          "datetime": "2026-10-20T03:11:03.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:57:36.342Z",
+      "language": "Indonesian",
+      "type": "news hook with personal-finance pivot",
+      "paraphrase": "Connects an AI infrastructure debt news claim to a question about knowing where personal money goes.",
+      "opening": "External financial news",
+      "register": "Conversational kamu, udah, ngalir; finance terms",
+      "CTA": "Answer a cash-flow awareness question",
+      "features": [
+        "news tie-in",
+        "topic tag",
+        "question pivot"
+      ],
+      "metrics": {
+        "likes": {
+          "value": null,
+          "display": null,
+          "label": "Like",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "replies": {
+          "value": null,
+          "display": null,
+          "label": "Comment",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "Repost",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "Share",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": 8,
+          "display": "8",
+          "label": "views",
+          "precision": "exact",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 0,
+        "visibleOwnOrBrandReplyPostsCount": 0,
+        "summary": "No replies loaded before Related threads; all engagement controls are blank.",
+        "examples": []
+      },
+      "limitations": [
+        "Financial news claims were not independently checked; this is a writing observation."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "B5",
+      "account": "monveo.app",
+      "accountRole": "brand",
+      "coauthors": [],
+      "platform": "instagram",
+      "canonicalURL": "https://www.instagram.com/monveo.app/p/Des1liikzkr/",
+      "publishedAtUTC": "2026-10-20T03:11:35.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "2h",
+          "datetime": "2026-10-20T03:11:35.000Z"
+        },
+        {
+          "text": "2 hours ago",
+          "datetime": "2026-10-20T03:11:32.000Z"
+        }
+      ],
+      "publicationOGDate": "October 19, 2026",
+      "observedAtUTC": "2026-10-20T05:57:36.405Z",
+      "language": "Indonesian",
+      "type": "news hook with personal-finance pivot",
+      "paraphrase": "Uses the same financial-news-to-personal-cash-flow caption pattern as B4.",
+      "opening": "External financial news",
+      "register": "Conversational kamu, udah, ngalir",
+      "CTA": "Answer a cash-flow awareness question",
+      "features": [
+        "cross-platform caption",
+        "two hashtags"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 0,
+          "display": "0",
+          "label": "likes",
+          "precision": "exact",
+          "source": "public page og:description; root UI count blank",
+          "note": null
+        },
+        "comments": {
+          "value": 0,
+          "display": "0",
+          "label": "comments",
+          "precision": "exact",
+          "source": "public page og:description plus visible No comments yet",
+          "note": null
+        },
+        "replies": {
+          "value": null,
+          "display": null,
+          "label": "replies",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "reposts",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "shares",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "views": {
+          "value": null,
+          "display": null,
+          "label": "views",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 0,
+        "visibleOwnOrBrandReplyPostsCount": 0,
+        "summary": "The public page explicitly says No comments yet; og:description explicitly records zero comments and likes.",
+        "examples": []
+      },
+      "limitations": [
+        "DOM publication date is 2026-10-20 UTC; og:description names October 19, 2026. Cause not established.",
+        "Financial news claims were not independently checked; media was not fully evaluated."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "B6",
+      "account": "monveo.app",
+      "accountRole": "brand",
+      "coauthors": [],
+      "platform": "instagram",
+      "canonicalURL": "https://www.instagram.com/monveo.app/reel/DeqoGshCVNL/",
+      "publishedAtUTC": "2026-10-19T06:35:50.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "23h",
+          "datetime": "2026-10-19T06:35:50.000Z"
+        },
+        {
+          "text": "23 hours ago",
+          "datetime": "2026-10-19T06:35:49.000Z"
+        }
+      ],
+      "publicationOGDate": "October 18, 2026",
+      "observedAtUTC": "2026-10-20T05:57:35.849Z",
+      "language": "Indonesian",
+      "type": "financial education, no direct product promotion",
+      "paraphrase": "Explains a pooled-investment concept using a shared-food analogy, with a risk caveat.",
+      "opening": "Accessible analogy",
+      "register": "Conversational Indonesian, everyday analogy",
+      "CTA": "No explicit response or product CTA",
+      "features": [
+        "analogy",
+        "risk caveat",
+        "two hashtags"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 0,
+          "display": "0",
+          "label": "likes",
+          "precision": "exact",
+          "source": "public page og:description; root UI count blank",
+          "note": null
+        },
+        "comments": {
+          "value": 0,
+          "display": "0",
+          "label": "comments",
+          "precision": "exact",
+          "source": "public page og:description plus visible No comments yet",
+          "note": null
+        },
+        "replies": {
+          "value": null,
+          "display": null,
+          "label": "replies",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "reposts",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "shares",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "views": {
+          "value": null,
+          "display": null,
+          "label": "views",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 0,
+        "visibleOwnOrBrandReplyPostsCount": 0,
+        "summary": "The public page explicitly says No comments yet; og:description explicitly records zero comments and likes.",
+        "examples": []
+      },
+      "limitations": [
+        "DOM publication date is 2026-10-19 UTC; og:description names October 18, 2026. Cause not established.",
+        "Only caption and visible comments analyzed, not the complete reel. Educational claims were not independently checked."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "P1",
+      "account": "shobrunjb",
+      "accountRole": "personal builder",
+      "coauthors": [
+        "shobrunjb",
+        "monveo.app"
+      ],
+      "platform": "instagram",
+      "canonicalURL": "https://www.instagram.com/shobrunjb/reel/DdfjN7pTiDo/",
+      "publishedAtUTC": "2026-09-20T02:52:00.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "4w",
+          "datetime": "2026-09-20T02:52:00.000Z"
+        },
+        {
+          "text": "September 19",
+          "datetime": "2026-09-20T02:52:01.000Z"
+        }
+      ],
+      "publicationOGDate": "September 19, 2026",
+      "observedAtUTC": "2026-10-20T05:57:43.839Z",
+      "language": "Indonesian with some English product/technical terms",
+      "type": "soft promotion with keyword-to-DM CTA",
+      "paraphrase": "Describes a personal realization about managing money and offers a link to the app used for tracking it.",
+      "opening": "First-person reflection",
+      "register": "Casual gua/kalian, English money-management terms",
+      "CTA": "Comment a keyword to receive a link by DM",
+      "features": [
+        "personal experience claim",
+        "product mention",
+        "coauthored reel",
+        "two hashtags"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 88,
+          "display": "88",
+          "label": "likes",
+          "precision": "exact",
+          "source": "public page og:description; visible count also present",
+          "note": null
+        },
+        "comments": {
+          "value": 13,
+          "display": "13",
+          "label": "comments",
+          "precision": "exact",
+          "source": "public page og:description; visible count also present",
+          "note": null
+        },
+        "replies": {
+          "value": null,
+          "display": null,
+          "label": "replies",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "reposts",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "shares",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "views": {
+          "value": null,
+          "display": null,
+          "label": "views",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 7,
+        "visibleOwnOrBrandReplyPostsCount": 1,
+        "summary": "Seven comments loaded: four keyword requests, one Monveo brand encouragement, and two short praise/emoji responses. Thirteen comments are reported overall. No DM fulfillment, download or retention was visible.",
+        "examples": [
+          {
+            "canonicalURL": null,
+            "sourcePostURL": "https://www.instagram.com/shobrunjb/reel/DdfjN7pTiDo/",
+            "account": "rizkiramadhanx",
+            "role": "audience",
+            "classification": "keyword request",
+            "paraphrase": "Requests the offered finance link using the requested keyword.",
+            "publishedAtUTC": null,
+            "publicationUIDisplay": "4w",
+            "observedAtUTC": "2026-10-20T05:57:43.839Z",
+            "source": "live public Instagram comment; individual permalink not exposed"
+          },
+          {
+            "canonicalURL": null,
+            "sourcePostURL": "https://www.instagram.com/shobrunjb/reel/DdfjN7pTiDo/",
+            "account": "monveo.app",
+            "role": "associated brand",
+            "classification": "brand encouragement",
+            "paraphrase": "Adds a short celebratory encouragement, not an independent testimonial.",
+            "publishedAtUTC": null,
+            "publicationUIDisplay": "4w",
+            "observedAtUTC": "2026-10-20T05:57:43.839Z",
+            "source": "live public Instagram comment; individual permalink not exposed"
+          }
+        ]
+      },
+      "limitations": [
+        "Coauthored with monveo.app, so exposure cannot be assigned to the personal account alone.",
+        "DOM root timestamp is September 20 UTC; visible calendar footer and og:description say September 19.",
+        "Only caption and comments analyzed, not the complete reel."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "P2",
+      "account": "shobrunjb",
+      "accountRole": "personal builder",
+      "coauthors": [
+        "shobrunjb",
+        "monveo.app"
+      ],
+      "platform": "instagram",
+      "canonicalURL": "https://www.instagram.com/shobrunjb/reel/DeY1lhRTD29/",
+      "publishedAtUTC": "2026-10-12T08:49:24.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "1w",
+          "datetime": "2026-10-12T08:49:24.000Z"
+        },
+        {
+          "text": "7 days ago",
+          "datetime": "2026-10-12T08:49:25.000Z"
+        }
+      ],
+      "publicationOGDate": "October 12, 2026",
+      "observedAtUTC": "2026-10-20T05:57:39.299Z",
+      "language": "Indonesian with some English product/technical terms",
+      "type": "problem-oriented soft promotion with keyword-to-DM CTA",
+      "paraphrase": "Opens with money disappearing before month-end, describes a personal budgeting habit, and connects it to Monveo.",
+      "opening": "Recognizable month-end money problem",
+      "register": "Casual gua/kalian, cape, abis; budgeting term",
+      "CTA": "Comment a keyword to receive details",
+      "features": [
+        "specific problem",
+        "first-person experience claim",
+        "coauthored reel"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 53,
+          "display": "53",
+          "label": "likes",
+          "precision": "exact",
+          "source": "public page og:description; visible count also present",
+          "note": null
+        },
+        "comments": {
+          "value": 2,
+          "display": "2",
+          "label": "comments",
+          "precision": "exact",
+          "source": "public page og:description; visible count also present",
+          "note": null
+        },
+        "replies": {
+          "value": null,
+          "display": null,
+          "label": "replies",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "reposts",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": null,
+          "display": null,
+          "label": "shares",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "views": {
+          "value": null,
+          "display": null,
+          "label": "views",
+          "precision": "not_visible",
+          "source": "not visible on inspected public Instagram page",
+          "note": "No count displayed in the inspected public UI"
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 1,
+        "visibleOwnOrBrandReplyPostsCount": 0,
+        "summary": "One fire-emoji response loaded although two comments are reported. No keyword request or delivered DM was visible in the loaded subset.",
+        "examples": []
+      },
+      "limitations": [
+        "Personal duration/benefit claims are the author’s account, not verified product evidence.",
+        "Only caption and comments analyzed, not the complete reel."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-posts-raw.json"
+    },
+    {
+      "id": "P3",
+      "account": "shobrunjb",
+      "accountRole": "personal builder",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@shobrunjb/post/Ddn2xIyGUyO",
+      "publishedAtUTC": "2026-09-23T08:14:04.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "09/23/26",
+          "datetime": "2026-09-23T08:14:04.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:58:55.754Z",
+      "language": "Indonesian with some English product/technical terms",
+      "type": "direct feature announcement and trial invitation",
+      "paraphrase": "Announces automatic transaction capture, credits user feedback, and invites people to update or try Monveo.",
+      "opening": "Enthusiastic specific feature announcement",
+      "register": "Casual Indonesian/English product vocabulary, uppercase opening, emojis",
+      "CTA": "Update/download; send questions or feedback",
+      "features": [
+        "user-request credit",
+        "concrete feature",
+        "author follow-up explains condition"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 560,
+          "display": "560",
+          "label": "Like",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "replies": {
+          "value": 54,
+          "display": "54",
+          "label": "Comment",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "reposts": {
+          "value": 41,
+          "display": "41",
+          "label": "Repost",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "shares": {
+          "value": 64,
+          "display": "64",
+          "label": "Share",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": null,
+          "display": "34K",
+          "label": "views",
+          "precision": "rounded",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 10,
+        "visibleOwnOrBrandReplyPostsCount": 2,
+        "summary": "Ten loaded reply posts include two author additions. Audience replies mix applause, Android requests and a substantive question about using a separate tracker. Product interest is visible, but purchases are not.",
+        "examples": [
+          {
+            "canonicalURL": "https://www.threads.com/@shobrunjb/post/DdoHhU-mbpp",
+            "account": "shobrunjb",
+            "role": "author",
+            "classification": "update instructions",
+            "paraphrase": "Gives an app version/store link and invites questions.",
+            "publishedAtUTC": "2026-09-23T10:40:28.000Z",
+            "observedAtUTC": "2026-10-20T05:58:55.754Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@shobrunjb/post/DdoJZMtk7JO",
+            "account": "shobrunjb",
+            "role": "author",
+            "classification": "feature boundary",
+            "paraphrase": "Explains claimed category/wallet detection and says a clear merchant name is required.",
+            "publishedAtUTC": "2026-09-23T10:58:45.000Z",
+            "observedAtUTC": "2026-10-20T05:58:55.754Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@dzulfikar.at/post/Ddn8v19ER1L",
+            "account": "dzulfikar.at",
+            "role": "audience",
+            "classification": "product value question",
+            "paraphrase": "Asks why a separate expense tracker is useful when already using an e-wallet.",
+            "publishedAtUTC": "2026-09-23T09:06:20.000Z",
+            "observedAtUTC": "2026-10-20T05:58:55.754Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@firman_eksandy/post/Ddn5SoLFZUf",
+            "account": "firman_eksandy",
+            "role": "audience",
+            "classification": "availability request",
+            "paraphrase": "Requests an Android version.",
+            "publishedAtUTC": "2026-09-23T08:36:07.000Z",
+            "observedAtUTC": "2026-10-20T05:58:55.754Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          }
+        ]
+      },
+      "limitations": [
+        "Feature, availability and user-count statements are author claims, not independent verification."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-founder-extra-raw.json"
+    },
+    {
+      "id": "P4",
+      "account": "shobrunjb",
+      "accountRole": "personal builder",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@shobrunjb/post/DdqEQYbGSYQ",
+      "publishedAtUTC": "2026-09-24T04:50:25.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "09/24/26",
+          "datetime": "2026-09-24T04:50:25.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:58:56.553Z",
+      "language": "Indonesian with some English product/technical terms",
+      "type": "response to privacy criticism",
+      "paraphrase": "Responds to a safety allegation with a claimed data-flow explanation and a pointer to the privacy section.",
+      "opening": "Quotation of criticism followed by clarification",
+      "register": "First-person gua, technical English, some defensive uppercase emphasis",
+      "CTA": "Ask questions; read the privacy explanation",
+      "features": [
+        "direct criticism response",
+        "claimed implementation details",
+        "pinned author clarification"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 86,
+          "display": "86",
+          "label": "Like",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "replies": {
+          "value": 27,
+          "display": "27",
+          "label": "Comment",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "reposts": {
+          "value": 7,
+          "display": "7",
+          "label": "Repost",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "shares": {
+          "value": 15,
+          "display": "15",
+          "label": "Share",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": null,
+          "display": "22.5K",
+          "label": "views",
+          "precision": "rounded",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 10,
+        "visibleOwnOrBrandReplyPostsCount": 1,
+        "summary": "Visible discussion contains substantive disagreement, platform questions, a user reporting minor bugs and an author clarification. A critic challenges the explanation using the product website. The study cannot resolve the technical privacy dispute.",
+        "examples": [
+          {
+            "canonicalURL": "https://www.threads.com/@shobrunjb/post/DdqHItjmU7I",
+            "account": "shobrunjb",
+            "role": "author",
+            "classification": "privacy clarification",
+            "paraphrase": "States a claimed on-device processing arrangement and invites feedback.",
+            "publishedAtUTC": "2026-09-24T05:15:35.000Z",
+            "observedAtUTC": "2026-10-20T05:58:56.553Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@m.ahesa/post/DdqIBdbE57_",
+            "account": "m.ahesa",
+            "role": "audience",
+            "classification": "substantive criticism",
+            "paraphrase": "Challenges the account by pointing to additional data collection described on the website.",
+            "publishedAtUTC": "2026-09-24T05:23:20.000Z",
+            "observedAtUTC": "2026-10-20T05:58:56.553Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@golhiburan/post/DdqsfW9k2lp",
+            "account": "golhiburan",
+            "role": "audience",
+            "classification": "mixed product experience",
+            "paraphrase": "Reports generally positive use with minor bugs and a preference for manual entry.",
+            "publishedAtUTC": "2026-09-24T10:41:59.000Z",
+            "observedAtUTC": "2026-10-20T05:58:56.553Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          }
+        ]
+      },
+      "limitations": [
+        "Counts on the embedded critical post are not the root post metrics.",
+        "Privacy architecture and legal compliance were not audited. Do not transfer or endorse these claims."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-founder-extra-raw.json",
+      "metricAttributionNote": "First four controls belong to the embedded quoted post. Root metrics use controls 4 through 7, verified through data-pressable-container ancestors."
+    },
+    {
+      "id": "P5",
+      "account": "shobrunjb",
+      "accountRole": "personal builder",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@shobrunjb/post/DerKEfgE_wR",
+      "publishedAtUTC": "2026-10-19T11:33:46.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "18h",
+          "datetime": "2026-10-19T11:33:46.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:58:54.859Z",
+      "language": "Indonesian with some English product/technical terms",
+      "type": "support update and feedback request",
+      "paraphrase": "Says a quoted interface issue is fixed and invites further Monveo feedback.",
+      "opening": "Acknowledges a named user’s report",
+      "register": "Casual bro, ges, klo; technical OTA/Expo wording",
+      "CTA": "Drop feedback",
+      "features": [
+        "specific user acknowledgment",
+        "claimed fix",
+        "delivery explanation"
+      ],
+      "metrics": {
+        "likes": {
+          "value": 3,
+          "display": "3",
+          "label": "Like",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "replies": {
+          "value": 4,
+          "display": "4",
+          "label": "Comment",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "reposts": {
+          "value": null,
+          "display": null,
+          "label": "Repost",
+          "precision": "not_visible",
+          "source": "live public DOM, root post toolbar",
+          "note": "No count displayed in the inspected public UI"
+        },
+        "shares": {
+          "value": 2,
+          "display": "2",
+          "label": "Share",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": 641,
+          "display": "641",
+          "label": "views",
+          "precision": "exact",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 4,
+        "visibleOwnOrBrandReplyPostsCount": 1,
+        "summary": "All four loaded replies belong to a separate developer’s promotion and the ensuing author exchange: three promoter messages and one author question. They are not four Monveo user endorsements. Unsolicited cross-promotion is visible; malicious spam is not established.",
+        "examples": [
+          {
+            "canonicalURL": "https://www.threads.com/@aarsydev/post/DerOuhQE4bf",
+            "account": "aarsydev",
+            "role": "audience",
+            "classification": "other-product promotion",
+            "paraphrase": "Introduces a push-notification service.",
+            "publishedAtUTC": "2026-10-19T12:12:33.000Z",
+            "observedAtUTC": "2026-10-20T05:58:54.859Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@shobrunjb/post/DerQAwdmSEI",
+            "account": "shobrunjb",
+            "role": "author",
+            "classification": "response to other-product promotion",
+            "paraphrase": "Asks what differentiates that service.",
+            "publishedAtUTC": "2026-10-19T12:23:47.000Z",
+            "observedAtUTC": "2026-10-20T05:58:54.859Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@aarsydev/post/DerQZBnEw8A",
+            "account": "aarsydev",
+            "role": "audience",
+            "classification": "other-product promotion",
+            "paraphrase": "Explains the promoted service’s offer.",
+            "publishedAtUTC": "2026-10-19T12:27:05.000Z",
+            "observedAtUTC": "2026-10-20T05:58:54.859Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@aarsydev/post/DerQfEck9-N",
+            "account": "aarsydev",
+            "role": "audience",
+            "classification": "other-product promotion",
+            "paraphrase": "Adds planned capabilities for the separate service.",
+            "publishedAtUTC": "2026-10-19T12:27:55.000Z",
+            "observedAtUTC": "2026-10-20T05:58:54.859Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          }
+        ]
+      },
+      "limitations": [
+        "Root metrics are separate from the quoted UI-feedback post.",
+        "Fix status is the author’s claim; this study did not test the app."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-founder-extra-raw.json",
+      "metricAttributionNote": "First four controls belong to the embedded quoted post. Root metrics use controls 4 through 7, verified through data-pressable-container ancestors."
+    },
+    {
+      "id": "P6",
+      "account": "shobrunjb",
+      "accountRole": "personal builder",
+      "coauthors": [],
+      "platform": "threads",
+      "canonicalURL": "https://www.threads.com/@shobrunjb/post/DcK2t9qmfcF",
+      "publishedAtUTC": "2026-08-18T05:24:16.000Z",
+      "publicationSource": "live DOM time[datetime] for root caption/post",
+      "publicationUIDisplay": [
+        {
+          "text": "08/18/26",
+          "datetime": "2026-08-18T05:24:16.000Z"
+        }
+      ],
+      "publicationOGDate": null,
+      "observedAtUTC": "2026-10-20T05:59:01.414Z",
+      "language": "Indonesian with some English product/technical terms",
+      "type": "milestone promotion with follow-up support",
+      "paraphrase": "Reports early launch traction and app ranking in a short emotional post; author replies add the app link and feedback invitation.",
+      "opening": "Self-reported launch milestone",
+      "register": "Brief Indonesian/English mix, emojis; author uses saya and aku in replies",
+      "CTA": "Try the app; DM feedback in follow-ups",
+      "features": [
+        "milestone claim",
+        "store link in own reply",
+        "bug support exchange"
+      ],
+      "metrics": {
+        "likes": {
+          "value": null,
+          "display": "1.4K",
+          "label": "Like",
+          "precision": "rounded",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "replies": {
+          "value": 77,
+          "display": "77",
+          "label": "Comment",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "reposts": {
+          "value": 80,
+          "display": "80",
+          "label": "Repost",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "shares": {
+          "value": 249,
+          "display": "249",
+          "label": "Share",
+          "precision": "exact",
+          "source": "live public DOM, root post toolbar",
+          "note": null
+        },
+        "comments": {
+          "value": null,
+          "display": null,
+          "label": "Comments",
+          "precision": "not_visible",
+          "source": "not applicable: Threads uses replies",
+          "note": "Use replies field"
+        },
+        "views": {
+          "value": null,
+          "display": "76.4K",
+          "label": "views",
+          "precision": "rounded",
+          "source": "live public DOM, page heading",
+          "note": null
+        }
+      },
+      "replyAnalysis": {
+        "scope": "Loaded public replies/comments only; excludes Related threads and More posts recommendations",
+        "visibleReplyPostsCount": 15,
+        "visibleOwnOrBrandReplyPostsCount": 5,
+        "summary": "The loaded discussion mixes praise, platform questions, collaboration, a balance bug report and a feature request. The author acknowledges a known balance bug and invites a DM. Launch/user/ranking claims remain self-reported.",
+        "examples": [
+          {
+            "canonicalURL": "https://www.threads.com/@lauragraciasrgh/post/DcK67Asj84v",
+            "account": "lauragraciasrgh",
+            "role": "audience",
+            "classification": "bug report",
+            "paraphrase": "Reports that the ending balance does not reconcile.",
+            "publishedAtUTC": "2026-08-18T06:01:00.000Z",
+            "observedAtUTC": "2026-10-20T05:59:01.414Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@shobrunjb/post/DcK7mTeGSeB",
+            "account": "shobrunjb",
+            "role": "author",
+            "classification": "bug acknowledgment",
+            "paraphrase": "Acknowledges the known bug, says it is being worked on and invites a DM.",
+            "publishedAtUTC": "2026-08-18T06:06:55.000Z",
+            "observedAtUTC": "2026-10-20T05:59:01.414Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@lauragraciasrgh/post/DcK_afljx-2",
+            "account": "lauragraciasrgh",
+            "role": "audience",
+            "classification": "reproduction follow-up",
+            "paraphrase": "Says reproduction evidence was sent by DM.",
+            "publishedAtUTC": "2026-08-18T06:40:15.000Z",
+            "observedAtUTC": "2026-10-20T05:59:01.414Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          },
+          {
+            "canonicalURL": "https://www.threads.com/@alyafadlh/post/DcLBRN6IH9J",
+            "account": "alyafadlh",
+            "role": "audience",
+            "classification": "positive experience with feature request",
+            "paraphrase": "Reports trying the app and asks for an expense action in the calendar view.",
+            "publishedAtUTC": "2026-08-18T06:56:28.000Z",
+            "observedAtUTC": "2026-10-20T05:59:01.414Z",
+            "source": "live public page, visible reply before Related threads",
+            "individualReplyMetrics": null
+          }
+        ]
+      },
+      "limitations": [
+        "Older relevant example found through a product-site testimonial link, so selection favors a curated successful launch moment.",
+        "1.4K likes and 76.4K views are rounded displays; exact values remain null."
+      ],
+      "rawEvidenceFile": "/tmp/monveo-founder-extra-raw.json"
+    }
+  ],
+  "sameAccountComparisons": [
+    {
+      "postIDs": [
+        "B1",
+        "B3"
+      ],
+      "observation": "Hypothetical windfall: 94 likes/136 replies; practical emergency-saving prompt: 2 likes/reply total unshown. Views 2.4K rounded versus 97.",
+      "limits": "Different topic, exposure and age; does not establish that hypothetical prompts or casual language cause engagement."
+    },
+    {
+      "postIDs": [
+        "B1",
+        "B2"
+      ],
+      "observation": "Two similar money-choice prompts have different capture totals: 94/136 versus 3/11 likes/replies.",
+      "limits": "B2 was only about 53 minutes old; B1 about two days. No fair maturity-matched performance conclusion."
+    },
+    {
+      "postIDs": [
+        "P1",
+        "P2"
+      ],
+      "observation": "Two coauthored soft-promotion reels with keyword CTAs: 88 likes/13 comments versus 53/2. P1 has four visible keyword requests; P2 has one visible emoji comment.",
+      "limits": "Different ages and content; full videos, distribution and fulfilled DMs unknown. Cannot infer installs, sales or causal CTA effect."
+    },
+    {
+      "postIDs": [
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "observation": "Feature announcement 560/54; privacy response 86/27; support update 3/4 likes/replies. Reply content respectively includes product questions, criticism and other-product promotion.",
+      "limits": "Different ages, topics and exposure; reply counts measure activity, not uniform approval or conversion."
+    }
+  ],
+  "contextualRegisterExample": {
+    "canonicalURL": "https://www.threads.com/@shobrunjb/post/Dd8ZnPfGciw",
+    "publishedAtUTC": "2026-10-01T07:43:22.000Z",
+    "observedAtUTC": "2026-10-20T05:59:00.275Z",
+    "paraphrase": "A professional-collaboration invitation introduces the builder with saya, while replies shift among saya, aku and gw. One reply says he cannot initiate a DM to the contact.",
+    "inference": "Even this single personal account changes register by audience. A brand should not inherit gua/lu automatically, and a promised DM requires a working process.",
+    "notIncludedInPrimaryMetricComparison": true,
+    "directAuthorDMConstraintURL": "https://www.threads.com/@shobrunjb/post/Dd8y6wvmaJK"
+  },
+  "recommendations": {
+    "status": "Editorial starting hypotheses based on this user-selected reference, not a prediction of growth or a representative claim about Indonesian audiences.",
+    "hisabinBrand": [
+      "Use friendly Indonesian, a specific audience problem and a useful explanation before a relevant product mention.",
+      "Use kamu or omit direct address as a starting choice; do not assume Jakarta-style gua/lu or slang is universally appropriate.",
+      "Use familiar English product terms only when they clarify meaning.",
+      "For Instagram captions, connect the practical problem to verified product evidence and one feasible next action. Do not describe unseen media.",
+      "For Threads, use one clear observation or practical question; product updates can lead directly with the change. Ask a question only when an answer is useful.",
+      "Answer questions first, acknowledge known issues, state the next step and any relevant limitation.",
+      "Use hypothetical polls occasionally only when useful for audience understanding; do not make reply-maximizing polls the identity of the brand.",
+      "Keyword-to-DM requests require actual fulfillment. Prefer a directly useful answer or available link when that process does not exist."
+    ],
+    "optionalFounder": [
+      "Use first person only for real supplied experience and responsibility. The owner chooses saya, aku or gua.",
+      "Credit specific feedback, explain what changed and follow up on bugs without claiming resolution before verification.",
+      "Use verifiable milestones sparingly. Do not reproduce another founder’s emotional style, user counts, rankings or product capabilities."
+    ],
+    "neverTransfer": [
+      "Monveo user/download counts or rankings",
+      "Monveo features, platform availability or pricing",
+      "Monveo privacy, on-device or legal-compliance claims",
+      "Monveo testimonials or founder’s personal experience",
+      "unseen reel content",
+      "financial results or investment assurances"
+    ],
+    "candidateProfile": {
+      "language": "id",
+      "tone": "friendly",
+      "brandName": "Hisabin",
+      "audience": "",
+      "brandFacts": "",
+      "voiceNotes": "Gunakan bahasa Indonesia yang ramah, ringkas, dan jelas. Mulai dari satu masalah nyata yang relevan dengan audiens, lalu beri langkah atau penjelasan yang berguna. Sebut Hisabin hanya saat manfaatnya didukung fakta yang diberikan. Gunakan kamu bila perlu menyapa pembaca. Jangan otomatis memakai gua/lu, slang berlebihan, atau klaim pengalaman pribadi. Istilah Inggris boleh dipakai jika lebih jelas bagi audiens. Balas inti pertanyaan terlebih dahulu, akui batasan yang diketahui, dan jelaskan langkah berikutnya. Ajakan bertindak harus relevan dan bisa dipenuhi; jangan menjanjikan DM atau bantuan yang belum tersedia. Jangan meminjam fitur, angka pengguna, testimoni, klaim privasi, atau hasil finansial Monveo.",
+      "examples": []
+    },
+    "candidateProfileScope": "For a future Hisabin organization/profile only. Keep audience and brandFacts empty until supplied. This does not authorize overwriting an existing Cahaves Cloud profile."
+  },
+  "exclusions": [
+    {
+      "url": "https://www.instagram.com/shobrunjb/reel/DdbfVIjyy33/",
+      "reason": "Promotes another product, PomoLocked; not used for Monveo conclusions."
+    },
+    {
+      "description": "Unrelated posts in platform recommendations",
+      "reason": "Not replies and not selected-account evidence."
+    }
+  ],
+  "uncertainty": {
+    "verified": "Account association and these captured labels are strongly supported by the inspected public pages.",
+    "notVerified": "Paid distribution, historical follower counts, unique reach, saves, clicks, fulfilled DMs, installs, sales, retention, product implementation and financial claims.",
+    "outcome": "I am unsure whether adopting this voice improves Hisabin acquisition. A comparison using Hisabin’s own mature posts, audience, reach, qualified questions and verified downstream actions would be needed.",
+    "generalization": "This is two connected accounts and a small purposive sample, not a finding about Indonesians in general."
+  },
+  "existingProfileReview": {
+    "path": "/Users/refifauzan/Projects/cahaves/postiz-app/docs/research/2026-10-20-social-writing/cahaves-default-profile.json",
+    "reviewedAtUTC": "2026-10-20T06:07:58Z",
+    "result": "Suitable for the intended conditional Hisabin guidance. No change needed from this study.",
+    "basis": [
+      "Hisabin guidance activates for the product/problem named in the brief.",
+      "It explicitly avoids assuming Hisabin is a personal-budgeting app or shares Monveo capabilities.",
+      "brandFacts and examples are empty.",
+      "Founder voice requires a supplied author and real experience.",
+      "Answer-first replies and verified next steps fit the observed support exchanges.",
+      "The auto language setting supports the umbrella profile; the separate id candidate in this study is optional and product scoped."
+    ],
+    "caveat": "Restrictions on hypothetical polls and keyword-comment requests are editorial defaults, not a claim that the tactics never work. Explicit task instructions still govern the chosen content."
+  }
+}

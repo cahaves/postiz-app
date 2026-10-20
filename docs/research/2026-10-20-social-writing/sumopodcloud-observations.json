@@ -1,0 +1,998 @@
+{
+  "study_date": "2026-10-20",
+  "brand_application": "CahavesCloud only; not Hisabin",
+  "reference_account": "sumopodcloud",
+  "scope": "Ten public original posts: nine Threads and the only Instagram post exposed. Eight supplementary brand reply examples.",
+  "identity": {
+    "website": "https://sumopod.com/",
+    "instagram": "https://www.instagram.com/sumopodcloud/",
+    "threads": "https://www.threads.com/@sumopodcloud",
+    "verification": "Website footer links both exact profiles; both profiles link back to sumopod.com.",
+    "observed_at_utc": "2026-10-20T05:55:50.154Z",
+    "website_declared_company": "PT Koding Kreasi Indonesia",
+    "legal_identity_independently_verified": false,
+    "profile_follower_discrepancies": {
+      "instagram": {
+        "rendered_ui": 519,
+        "metadata": 517
+      },
+      "threads": {
+        "rendered_ui": 6550,
+        "metadata_display": "6.6K"
+      }
+    }
+  },
+  "method": {
+    "access": "Fresh anonymous headless Chromium only. No personal browser/profile/cookies/login.",
+    "selection": "Recent accessible account profile posts plus relevant same-account posts linked through media, replies, and related posts. Purposive convenience sample, not a random sample.",
+    "publication_time": "Public DOM time[datetime], preserved in UTC.",
+    "counts": "Rendered live counts adjacent to named Like, Comment, Repost, Share icons, with screenshots for context. Embedded quoted-post counts are excluded from target counts.",
+    "missing_values": "Null means not exposed or not verified, never inferred zero. Instagram comments=0 is supported by explicit empty state and metadata.",
+    "rounded_views": "Keep exact displayed strings. Numeric views is null when rounded K display.",
+    "comment_scope": "Only actual replies before Related threads are analyzed. Visible reply counts can include author replies. Partial anonymous rendering is not proof of absent replies.",
+    "comparison": "Current follower totals are not publication-time denominators. No engagement rates or causal style ranking calculated.",
+    "claim_verification": "This is a communication study. Reference prices, capabilities, provider relationships, availability, and roadmaps are reported claims, not validated facts for CahavesCloud."
+  },
+  "records": [
+    {
+      "sample_id": "S01",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DetBC_vlI_V",
+      "published_at_utc": "2026-10-20T04:51:29.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:55.283Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "feature release",
+      "paraphrase": "Announces support tickets, explains tracking support requests through the Support menu, and says email support still works.",
+      "style_observations": "Short headline followed by practical use and location; conversational Indonesian; a smile emoticon; no purchase CTA.",
+      "metrics": {
+        "likes": 7,
+        "comments_or_replies": 4,
+        "reposts": null,
+        "shares": null,
+        "views": 324,
+        "views_display": "324",
+        "views_rounded": false,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "7"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "4"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "target_action_group_zero_based": 0,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "Two exposed audience replies: one welcomes ticketing while reporting an unanswered email; another asks about renewal pricing. A separate brand reply answers the price question. No answer to the delayed-email report was visible in this sample.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DetBC_vlI_V-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DetBC_vlI_V-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S02",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DesWndxExJ0",
+      "published_at_utc": "2026-10-19T22:40:44.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:53.045Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "promotion update",
+      "paraphrase": "Reports yesterday's VPS purchases and remaining promotion quota, then urges readers to buy before it is exhausted.",
+      "style_observations": "Numbers and scarcity drive the pitch; casual slang and emoticon; quotes the original promotion.",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": null,
+        "reposts": null,
+        "shares": null,
+        "views": 389,
+        "views_display": "389",
+        "views_rounded": false,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "target_action_group_zero_based": 1,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "No replies to this target were exposed. The large counts belong to the quoted promotion, not this post.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DesWndxExJ0-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DesWndxExJ0-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S03",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DerQd9-lCLe",
+      "published_at_utc": "2026-10-19T12:27:46.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:10.284Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "availability update",
+      "paraphrase": "Reports Jakarta inventory exhausted, offers Singapore as an alternative, and later pins an update saying Jakarta is available again.",
+      "style_observations": "Direct operational status mixed with playful slang and repeated fire emojis; quotes the original promotion.",
+      "metrics": {
+        "likes": 6,
+        "comments_or_replies": 4,
+        "reposts": null,
+        "shares": null,
+        "views": null,
+        "views_display": "1.5K",
+        "views_rounded": true,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "6"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "4"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "target_action_group_zero_based": 1,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "A pinned author correction updates availability. A reader asks what to do; the author suggests a new purchase. Another reader requests a larger RAM plan. This is a changing availability conversation, not independent praise.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DerQd9-lCLe-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DerQd9-lCLe-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S04",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DerLsfKlCbW",
+      "published_at_utc": "2026-10-19T11:46:03.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:55.093Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "promotion update",
+      "paraphrase": "Reports rapid uptake and an approximate remaining quota for the same VPS promotion.",
+      "style_observations": "Two short lines, quantity and urgency, no question, quoted offer for context.",
+      "metrics": {
+        "likes": 2,
+        "comments_or_replies": 4,
+        "reposts": 1,
+        "shares": null,
+        "views": 578,
+        "views_display": "578",
+        "views_rounded": false,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "2"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "4"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": "1"
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "target_action_group_zero_based": 1,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "The target displays four replies, but their contents were not exposed in the captured page. Counts from the embedded original offer are excluded.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DerLsfKlCbW-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DerLsfKlCbW-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S05",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/Deq2xR4lExI",
+      "published_at_utc": "2026-10-19T08:43:12.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:10.745Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "trust clarification",
+      "paraphrase": "Responds to a reader's reseller legitimacy concern with a claimed Tencent relationship, support route, and pending partner-directory listing.",
+      "style_observations": "Specific explanation in everyday Indonesian; uses a quoted reader question; tentative future administrative status is separate from current claims.",
+      "metrics": {
+        "likes": 25,
+        "comments_or_replies": 9,
+        "reposts": 1,
+        "shares": null,
+        "views": null,
+        "views_display": "2K",
+        "views_rounded": true,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "25"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "9"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": "1"
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "target_action_group_zero_based": 1,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "Readers ask about eligibility for a provider promotion, AI billing, and a reboot/provisioning issue. The author explicitly says one annual promotion cannot be bought through a reseller. The technical complaint has no exposed author answer.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-Deq2xR4lExI-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-Deq2xR4lExI-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S06",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DeqyEKTFHMU",
+      "published_at_utc": "2026-10-19T08:02:06.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:01.910Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "price promotion",
+      "paraphrase": "Presents a VPS discount as a way to start learning, includes an entry price and renewal condition, and shows a plan-comparison screenshot.",
+      "style_observations": "Benefit tied to a concrete beginner task, then price and recurring condition. No generic emotional hook or hashtags in exposed text.",
+      "metrics": {
+        "likes": 85,
+        "comments_or_replies": 72,
+        "reposts": 9,
+        "shares": 19,
+        "views": null,
+        "views_display": "14K",
+        "views_rounded": true,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "85"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "72"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": "9"
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": "19"
+        }
+      ],
+      "target_action_group_zero_based": 0,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "Visible discussion includes plan eligibility, CPU, upgrades, snapshots, restocks, provider legitimacy, and promotion duration. Many replies are the author's own answers and follow-up questions. No repeated unrelated promotional spam was observed in this visible subset.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DeqyEKTFHMU-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DeqyEKTFHMU-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S07",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DeqnezYFP34",
+      "published_at_utc": "2026-10-19T06:29:37.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:02.466Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "business milestone",
+      "paraphrase": "Celebrates a trademark-registration milestone with an image; a pinned author reply links to a VPS offer.",
+      "style_observations": "Very short informal celebration with an emoticon. Promotion is placed in an author reply rather than the root caption.",
+      "metrics": {
+        "likes": 311,
+        "comments_or_replies": 54,
+        "reposts": 3,
+        "shares": 4,
+        "views": null,
+        "views_display": "18.3K",
+        "views_rounded": true,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "311"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "54"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": "3"
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": "4"
+        }
+      ],
+      "target_action_group_zero_based": 0,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "Congratulatory replies mix with product, pricing, annual-plan, and hourly-billing questions. The author clarifies registration versus copyright, says pricing will not rise, and states hourly billing is unavailable. The pinned promotional reply is by the brand.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DeqnezYFP34-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DeqnezYFP34-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S08",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/Dd7lXDwEyuL",
+      "published_at_utc": "2026-10-01T00:06:46.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:57:24.085Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "promotion update",
+      "paraphrase": "Reports remaining VPS stock, prior sales, and an acquisition window for a promotion.",
+      "style_observations": "Numerical update, deadline and scarcity, casual phrasing and emoticon.",
+      "metrics": {
+        "likes": 53,
+        "comments_or_replies": 34,
+        "reposts": null,
+        "shares": 3,
+        "views": null,
+        "views_display": "9.3K",
+        "views_rounded": true,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "53"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "34"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": "3"
+        }
+      ],
+      "target_action_group_zero_based": 0,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "Readers ask about renewal prices, plan upgrades, availability, password reset, annual payment, and software compatibility. Multiple author answers count toward the displayed reply total. One thread clarifies that an acquisition deadline differs from the discounted renewal price.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-Dd7lXDwEyuL-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-Dd7lXDwEyuL.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S09",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DdcjgX4k2xo",
+      "published_at_utc": "2026-09-18T22:54:07.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:02.674Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "product collaboration promotion",
+      "paraphrase": "Introduces a WhatsApp API collaboration at a stated monthly price, points to its dashboard route and community, and cites adoption.",
+      "style_observations": "Price and feature announcement with a rhetorical invitation, named collaborator, and help/community CTA.",
+      "metrics": {
+        "likes": 25,
+        "comments_or_replies": 29,
+        "reposts": 3,
+        "shares": 3,
+        "views": null,
+        "views_display": "4.4K",
+        "views_rounded": true,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "25"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "29"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": "3"
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": "3"
+        }
+      ],
+      "target_action_group_zero_based": 0,
+      "follower_count_observed": 6550,
+      "follower_observed_at_utc": "2026-10-20T05:55:51.449Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "Several readers ask what the product does. Others ask about provider status, interface, phone-number migration, and price. The author later clarifies that Meta charges are additional. No guarantee against a ban can be inferred from a provider-status reply.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DdcjgX4k2xo-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DdcjgX4k2xo-settled.png",
+      "metadata_discrepancies": [],
+      "metadata_metrics": null
+    },
+    {
+      "sample_id": "S10",
+      "platform": "instagram",
+      "account": "sumopodcloud",
+      "language": "en",
+      "canonical_url": "https://www.instagram.com/sumopodcloud/p/DKQngFNycnw/",
+      "published_at_utc": "2025-05-30T01:41:40.000Z",
+      "publication_time_source": "root-caption time[datetime] in public DOM",
+      "observed_at_utc": "2026-10-20T05:58:10.144Z",
+      "metric_source": "live_page",
+      "access": "Separate anonymous headless Chromium; fresh context, no login or imported cookies.",
+      "format": "image with text",
+      "content_type": "brand introduction",
+      "paraphrase": "A one-line English invitation to deploy an app, paired with an image claiming fast deployment and showing two actions.",
+      "style_observations": "Minimal English caption supported by a promotional product image. Only one public Instagram post was exposed.",
+      "metrics": {
+        "likes": 10,
+        "comments_or_replies": 0,
+        "reposts": null,
+        "shares": null,
+        "views": null,
+        "views_display": null,
+        "views_rounded": false,
+        "saves": null,
+        "reach": null,
+        "conversions": null
+      },
+      "metric_evidence": [
+        {
+          "visual_element": "heart icon and adjacent text",
+          "visible_adjacent_text": "10"
+        },
+        {
+          "visual_element": "comment empty state",
+          "visible_adjacent_text": "No comments yet."
+        }
+      ],
+      "target_action_group_zero_based": null,
+      "follower_count_observed": 519,
+      "follower_observed_at_utc": "2026-10-20T05:55:50.615Z",
+      "follower_denominator_at_publication": null,
+      "engagement_rate": null,
+      "reply_observation": "The page explicitly states that there are no comments. This old single post cannot establish a current Instagram strategy.",
+      "observed_hashtags": [],
+      "explicit_topic_tag_observed": null,
+      "approved_cahaves_voice_example": false,
+      "reference_product_claims_verified": false,
+      "raw_capture_path": "/tmp/cahaves-sumopod-DKQngFNycnw-settled-raw.json",
+      "screenshot_path": "/tmp/cahaves-sumopod-DKQngFNycnw-settled.png",
+      "metadata_discrepancies": [
+        {
+          "field": "publication date",
+          "rendered_calendar_date": "May 29, 2025",
+          "metadata_calendar_date": "May 29, 2025",
+          "root_caption_datetime_utc": "2025-05-30T01:41:40.000Z",
+          "footer_datetime_utc": "2025-05-30T01:41:39.000Z",
+          "note": "Preserve both. The visible calendar date differs from UTC date, and the two DOM datetime values differ by one second; do not infer a confirmed posting timezone."
+        }
+      ],
+      "metadata_metrics": {
+        "likes": 10,
+        "comments": 0
+      }
+    }
+  ],
+  "reply_examples": [
+    {
+      "sample_id": "SR01",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DetFH4NlL8N",
+      "parent_comment_url": "https://www.threads.com/@sada_siagian/post/DetEH76mGbf",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/DetBC_vlI_V",
+      "published_at_utc": "2026-10-20T05:27:07.000Z",
+      "observed_at_utc": "2026-10-20T05:57:24.924Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": null,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "6",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "renewal price question",
+      "audience_paraphrase": "A reader asks whether the promotional purchase price remains on renewal.",
+      "brand_reply_paraphrase": "The brand answers directly and uses a numerical example to explain the renewal condition.",
+      "design_lesson": "Clear answer and condition. For CahavesCloud, retrieve current plan and renewal policy; do not transfer this price.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-DetFH4NlL8N-raw.json"
+    },
+    {
+      "sample_id": "SR02",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DesvmaSlKvA",
+      "parent_comment_url": "https://www.threads.com/@hengki.agung/post/DessU-lDyJW",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/DeqyEKTFHMU",
+      "published_at_utc": "2026-10-20T02:19:02.000Z",
+      "observed_at_utc": "2026-10-20T05:57:27.711Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": null,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "50",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "existing customer price complaint",
+      "audience_paraphrase": "A customer says an existing VPS still renews at the previous higher price.",
+      "brand_reply_paraphrase": "The brand says a new purchase is required.",
+      "design_lesson": "The short answer exposes an eligibility condition. CahavesCloud should acknowledge the concern and state the verified condition and options, without inventing migration or billing behavior.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-DesvmaSlKvA-raw.json"
+    },
+    {
+      "sample_id": "SR03",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DeszGI0lLL5",
+      "parent_comment_url": "https://www.threads.com/@sutejakw/post/DessguTkq7i",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/DeqnezYFP34",
+      "published_at_utc": "2026-10-20T02:49:35.000Z",
+      "observed_at_utc": "2026-10-20T05:57:27.668Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": null,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "32",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "feature request",
+      "audience_paraphrase": "A reader asks to invite other team members to the dashboard.",
+      "brand_reply_paraphrase": "The brand says work is in progress.",
+      "design_lesson": "Useful concise acknowledgement, but a roadmap promise requires authorized product evidence. Do not generate in-progress or coming-soon claims by imitation.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-DeszGI0lLL5-raw.json"
+    },
+    {
+      "sample_id": "SR04",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/Desr_NpFELR",
+      "parent_comment_url": "https://www.threads.com/@andra.rafiiii/post/DesqJFnktgP",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/DeqyEKTFHMU",
+      "published_at_utc": "2026-10-20T01:47:28.000Z",
+      "observed_at_utc": "2026-10-20T05:57:28.622Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": null,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "24",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "promotion scope question",
+      "audience_paraphrase": "A reader asks when a larger-memory plan will be discounted.",
+      "brand_reply_paraphrase": "The brand limits the current offer to the lowest plan.",
+      "design_lesson": "State exact eligible plans and current limits. Earlier discussion also says other prices are discounted versus direct purchase; scope needs careful wording.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-Desr_NpFELR-raw.json"
+    },
+    {
+      "sample_id": "SR05",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DeqzNF-lEtK",
+      "parent_comment_url": "https://www.threads.com/@ranggaocstar/post/DeqzCLlEsvr",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/DeqyEKTFHMU",
+      "published_at_utc": "2026-10-19T08:12:03.000Z",
+      "observed_at_utc": "2026-10-20T05:58:01.910Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": 1,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "14K",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "upgrade help",
+      "audience_paraphrase": "A reader needs an upgrade unavailable through the dashboard.",
+      "brand_reply_paraphrase": "The brand directs the reader to email, explains payment of the difference, and mentions a planned dashboard route.",
+      "design_lesson": "Resolve the actual workflow with a verified current route. Do not borrow support addresses, upgrade policy, or roadmap timing.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "1"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-DeqyEKTFHMU-settled-raw.json"
+    },
+    {
+      "sample_id": "SR06",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DddceeulA7Q",
+      "parent_comment_url": "https://www.threads.com/@faymv/post/DddQ5BwCSRq",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/DdcjgX4k2xo",
+      "published_at_utc": "2026-09-19T07:11:56.000Z",
+      "observed_at_utc": "2026-10-20T05:58:02.674Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": null,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "4.4K",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "price clarification",
+      "audience_paraphrase": "A reader asks whether the advertised monthly price is complete.",
+      "brand_reply_paraphrase": "The brand confirms the subscription price but says Meta charges are separate.",
+      "design_lesson": "Put material extra fees in the original offer where possible. Replies should clarify totals without making unsupported all-inclusive claims.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-DdcjgX4k2xo-settled-raw.json"
+    },
+    {
+      "sample_id": "SR07",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/Deq3t06lCoS",
+      "parent_comment_url": "https://www.threads.com/@youn8e_/post/DeqtlD_EtHa",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/DeqnezYFP34",
+      "published_at_utc": "2026-10-19T08:51:28.000Z",
+      "observed_at_utc": "2026-10-20T05:58:02.466Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": 1,
+        "comments_or_replies": 1,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "18.3K",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "billing capability question",
+      "audience_paraphrase": "A reader requests a pricing page and asks about hourly billing for research.",
+      "brand_reply_paraphrase": "The brand says hourly billing is not currently available.",
+      "design_lesson": "Answer the capability question candidly. Avoid implying unavailable options are supported.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": "1"
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": "1"
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-DeqnezYFP34-settled-raw.json"
+    },
+    {
+      "sample_id": "SR08",
+      "platform": "threads",
+      "account": "sumopodcloud",
+      "language": "id",
+      "canonical_url": "https://www.threads.com/@sumopodcloud/post/DerEIv1lLWP",
+      "parent_comment_url": "https://www.threads.com/@guardling7/post/DerBX3pIHew",
+      "root_post_url": "https://www.threads.com/@sumopodcloud/post/Deq2xR4lExI",
+      "published_at_utc": "2026-10-19T10:40:00.000Z",
+      "observed_at_utc": "2026-10-20T05:58:10.745Z",
+      "metric_source": "live_page",
+      "metrics": {
+        "likes": null,
+        "comments_or_replies": null,
+        "reposts": null,
+        "shares": null
+      },
+      "views": null,
+      "page_header_views_display": "2K",
+      "view_attribution_note": "Header views excluded from reply metric because attribution to target reply versus conversation is not established.",
+      "intent": "provider promotion eligibility",
+      "audience_paraphrase": "A reader asks whether a provider-specific annual promotion can be purchased through the reseller.",
+      "brand_reply_paraphrase": "The brand says that offer cannot be bought through a reseller.",
+      "design_lesson": "An explicit limitation can be the complete useful answer. No appended sales pitch is necessary.",
+      "metric_evidence": [
+        {
+          "icon_title": "Like",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Comment",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Repost",
+          "visible_adjacent_text": null
+        },
+        {
+          "icon_title": "Share",
+          "visible_adjacent_text": null
+        }
+      ],
+      "raw_capture_path": "/tmp/cahaves-sumopod-Deq2xR4lExI-settled-raw.json"
+    }
+  ],
+  "provisional_voice_note": "Sound like a helpful cloud operator talking to builders. Start from a concrete task, current change, or real limitation. Use short conversational language and technical terms when useful. Explain what the feature does, where to find it, and any material conditions. Answer support and pricing questions directly from verified product facts. Keep promotion optional. Never invent stock, urgency, discounts, provider status, benchmarks, user counts, or roadmap promises.",
+  "recommendation_status": "Editable design hypotheses supported by observed communication patterns, not causal engagement evidence."
+}
