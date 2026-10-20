@@ -56,6 +56,16 @@ import { plainToInstance } from 'class-transformer';
 import { stripHtmlValidation } from '@gitroom/helpers/utils/strip.html.validation';
 import { postContentPlainText } from '@gitroom/helpers/utils/sanitize.post.content';
 import { CreatePublicCommentDto } from '@gitroom/nestjs-libraries/dtos/comments/add.comment.dto';
+import {
+  AiTextRequestDto,
+  AiTextCapabilities,
+  AiTextResponse,
+} from '@gitroom/nestjs-libraries/dtos/posts/ai.text.dto';
+import {
+  AiTextService,
+  aiTextError,
+} from '@gitroom/nestjs-libraries/openai/ai.text.service';
+import { plainTextToPostHtml } from '@gitroom/helpers/utils/sanitize.post.content';
 import { countLength } from '@gitroom/helpers/utils/count.length';
 
 type PostWithConditionals = Post & {
@@ -74,8 +84,141 @@ export class PostsService {
     private _shortLinkService: ShortLinkService,
     private _openaiService: OpenaiService,
     private _temporalService: TemporalService,
-    private _refreshIntegrationService: RefreshIntegrationService
+    private _refreshIntegrationService: RefreshIntegrationService,
+    private _aiTextService: AiTextService
   ) {}
+
+  aiTextCapabilities(): AiTextCapabilities {
+    return this._aiTextService.capabilities();
+  }
+
+  async generateAiText(
+    orgId: string,
+    input: AiTextRequestDto,
+    signal?: AbortSignal
+  ): Promise<AiTextResponse> {
+    if (!this.aiTextCapabilities().configured) {
+      throw aiTextError(
+        503,
+        'AI_NOT_CONFIGURED',
+        'AI writing is not configured. Ask your administrator to configure OpenRouter.'
+      );
+    }
+    const invalid = () =>
+      aiTextError(
+        400,
+        'AI_INVALID_INPUT',
+        'Check your AI instruction, source text and channel settings.'
+      );
+    const dto = await new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      exceptionFactory: invalid,
+    }).transform(input, { type: 'body', metatype: AiTextRequestDto });
+    const channels = await Promise.all(
+      dto.channels.map(async (channel) => {
+        const integration = await this._integrationService.getIntegrationById(
+          orgId,
+          channel.integrationId
+        );
+        const unavailable = () =>
+          aiTextError(
+            400,
+            'AI_CHANNEL_UNAVAILABLE',
+            'A selected channel is unavailable or does not support AI text.'
+          );
+        if (
+          !integration ||
+          integration.organizationId !== orgId ||
+          integration.deletedAt ||
+          integration.disabled
+        )
+          throw unavailable();
+        let provider: ReturnType<IntegrationManager['getSocialIntegration']>;
+        try {
+          provider = this._integrationManager.getSocialIntegration(
+            integration.providerIdentifier
+          );
+        } catch {
+          throw unavailable();
+        }
+        if (
+          !provider ||
+          provider.editor !== 'normal' ||
+          typeof provider.maxLength !== 'function'
+        )
+          throw unavailable();
+        let settings: object = {};
+        if (provider.dto) {
+          settings = plainToInstance(provider.dto, channel.settings, {
+            enableImplicitConversion: false,
+          });
+          if (
+            (
+              await validate(settings, {
+                whitelist: true,
+                forbidNonWhitelisted: true,
+                forbidUnknownValues: true,
+                skipMissingProperties: false,
+              })
+            ).length
+          )
+            throw invalid();
+        } else if (Object.keys(channel.settings).length) throw invalid();
+        let additionalSettings: unknown;
+        try {
+          additionalSettings = JSON.parse(
+            integration.additionalSettings || '[]'
+          );
+        } catch {
+          throw invalid();
+        }
+        if (!Array.isArray(additionalSettings)) throw invalid();
+        let maximum: number;
+        try {
+          maximum = provider.maxLength(additionalSettings, settings);
+        } catch {
+          throw invalid();
+        }
+        if (maximum && (!Number.isFinite(maximum) || maximum < 0))
+          throw invalid();
+        return {
+          integrationId: channel.integrationId,
+          identifier: integration.providerIdentifier,
+          maximumCharacters: maximum || null,
+        };
+      })
+    );
+    const blocks = await this._aiTextService.generate(
+      orgId,
+      dto,
+      channels,
+      signal
+    );
+    const limits = channels.map(
+      ({ integrationId, identifier, maximumCharacters }) => {
+        const counts = blocks.map(({ id, content }) => ({
+          id,
+          count: countLength(
+            identifier,
+            stripHtmlValidation('normal', plainTextToPostHtml(content), true)
+          ),
+        }));
+        if (
+          counts.some(({ count }) => count > (maximumCharacters || 1000000))
+        ) {
+          throw aiTextError(
+            422,
+            'AI_OUTPUT_TOO_LONG',
+            'AI draft exceeds a selected channel limit. Please ask for shorter text.'
+          );
+        }
+        return { integrationId, maximumCharacters, counts };
+      }
+    );
+    return { blocks, limits };
+  }
 
   searchForMissingThreeHoursPosts() {
     return this._postRepository.searchForMissingThreeHoursPosts();

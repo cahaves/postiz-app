@@ -9,6 +9,14 @@ import {
   Put,
   Query,
   Res,
+  Req,
+  UseGuards,
+  UsePipes,
+  UseFilters,
+  ValidationPipe,
+  Catch,
+  ArgumentsHost,
+  ExceptionFilter,
 } from '@nestjs/common';
 import { PostsService } from '@gitroom/nestjs-libraries/database/prisma/posts/posts.service';
 import { GetOrgFromRequest } from '@gitroom/nestjs-libraries/user/org.from.request';
@@ -20,13 +28,18 @@ import { ApiTags } from '@nestjs/swagger';
 import { GeneratorDto } from '@gitroom/nestjs-libraries/dtos/generator/generator.dto';
 import { CreateGeneratedPostsDto } from '@gitroom/nestjs-libraries/dtos/generator/create.generated.posts.dto';
 import { AgentGraphService } from '@gitroom/nestjs-libraries/agent/agent.graph.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { Throttle } from '@nestjs/throttler';
+import { AiTextRequestDto } from '@gitroom/nestjs-libraries/dtos/posts/ai.text.dto';
+import { AiTextThrottlerGuard } from '@gitroom/nestjs-libraries/throttler/throttler.provider';
+import { aiTextError } from '@gitroom/nestjs-libraries/openai/ai.text.service';
 import { GetUserFromRequest } from '@gitroom/nestjs-libraries/user/user.from.request';
 import { ShortLinkService } from '@gitroom/nestjs-libraries/short-linking/short.link.service';
 import { CreateTagDto } from '@gitroom/nestjs-libraries/dtos/posts/create.tag.dto';
 import {
   AuthorizationActions,
   Sections,
+  SubscriptionException,
 } from '@gitroom/backend/services/auth/permissions/permission.exception.class';
 import { PostValidationException } from '@gitroom/backend/api/routes/posts.validation.exception';
 import {
@@ -34,6 +47,40 @@ import {
   ResolveCommentDto,
 } from '@gitroom/nestjs-libraries/dtos/comments/add.comment.dto';
 import { RealIP } from 'nestjs-real-ip';
+
+@Catch(HttpException)
+export class AiTextExceptionFilter implements ExceptionFilter {
+  catch(error: HttpException, host: ArgumentsHost) {
+    const response = host.switchToHttp().getResponse<Response>();
+    if (error instanceof SubscriptionException) {
+      response
+        .status(403)
+        .json({
+          code: 'AI_ACCESS_DENIED',
+          message: 'AI writing is not available for this organization.',
+        });
+      return;
+    }
+    const status = error.getStatus();
+    const body = error.getResponse();
+    if (status === 429 && !response.getHeader('Retry-After'))
+      response.header('Retry-After', '45');
+    if (
+      typeof body === 'object' &&
+      'code' in body &&
+      String(body.code).startsWith('AI_')
+    ) {
+      response.status(status).json(body);
+      return;
+    }
+    response
+      .status(status)
+      .json({
+        code: 'AI_INVALID_INPUT',
+        message: 'Check your AI instruction, source text and channel settings.',
+      });
+  }
+}
 
 @ApiTags('Posts')
 @Controller('/posts')
@@ -43,6 +90,57 @@ export class PostsController {
     private _agentGraphService: AgentGraphService,
     private _shortLinkService: ShortLinkService
   ) {}
+
+  @Get('/ai-text/capabilities')
+  @CheckPolicies([AuthorizationActions.Create, Sections.AI])
+  @UseFilters(AiTextExceptionFilter)
+  aiTextCapabilities() {
+    return this._postsService.aiTextCapabilities();
+  }
+
+  @Post('/ai-text')
+  @CheckPolicies([AuthorizationActions.Create, Sections.AI])
+  @UseFilters(AiTextExceptionFilter)
+  @UseGuards(AiTextThrottlerGuard)
+  @Throttle({ default: { limit: 10, ttl: 60000, blockDuration: 60000 } })
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      exceptionFactory: () =>
+        aiTextError(
+          400,
+          'AI_INVALID_INPUT',
+          'Check your AI instruction, source text and channel settings.'
+        ),
+    })
+  )
+  async generateAiText(
+    @GetOrgFromRequest() org: Organization,
+    @Body() body: AiTextRequestDto,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response
+  ) {
+    const controller = new AbortController();
+    const cancel = () => controller.abort();
+    const disconnect = () => {
+      if (!response.writableEnded) cancel();
+    };
+    request.once('aborted', cancel);
+    response.once('close', disconnect);
+    if (request.aborted || response.destroyed) cancel();
+    try {
+      return await this._postsService.generateAiText(
+        org.id,
+        body,
+        controller.signal
+      );
+    } finally {
+      request.removeListener('aborted', cancel);
+      response.removeListener('close', disconnect);
+    }
+  }
 
   @Get('/:id/statistics')
   async getStatistics(

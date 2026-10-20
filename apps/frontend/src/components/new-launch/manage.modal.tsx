@@ -36,7 +36,13 @@ import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
 import { useModals } from '@gitroom/frontend/components/layout/new-modal';
 import { capitalize } from 'lodash';
 import { SelectCustomer } from '@gitroom/frontend/components/launches/select.customer';
-import { CopilotPopup } from '@copilotkit/react-ui';
+import { flushSync } from 'react-dom';
+import { plainTextToPostHtml } from '@gitroom/helpers/utils/sanitize.post.content';
+import {
+  AiTextAssistant,
+  AiTextCandidate,
+  AiSubmissionResult,
+} from './ai.text.assistant';
 import { DummyCodeComponent } from '@gitroom/frontend/components/new-launch/dummy.code.component';
 import { CreationMethodBadge } from '@gitroom/frontend/components/launches/creation.method.badge';
 import {
@@ -70,9 +76,63 @@ import { useClickOutside } from '@mantine/hooks';
 export const ManageModal: FC<AddEditModalProps> = (props) => {
   const t = useT();
   const fetch = useFetch();
-  const ref = useRef(null);
+  const ref = useRef<any>(null);
   const existingData = useExistingData();
   const [loading, setLoading] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
+  const aiBusyRef = useRef(false);
+  const saving = useRef(false);
+  const mounted = useRef(true);
+  const latest = useRef({ existingData, props });
+  latest.current = { existingData, props };
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  const changeAiBusy = useCallback((value: boolean) => {
+    aiBusyRef.current = value;
+    if (mounted.current) setAiBusy(value);
+  }, []);
+
+  const draftSignature = useCallback(() => {
+    const state = useLaunchStore.getState();
+    return JSON.stringify({
+      session: state.aiTextSession,
+      scope: state.current,
+      editor: state.editor,
+      global: state.global,
+      internal: state.internal.map(({ integration, integrationValue }) => ({
+        id: integration.id,
+        integrationValue,
+      })),
+      selected: state.selectedIntegrations.map(({ integration, settings }) => ({
+        id: integration.id,
+        stripLinks: integration.stripLinks,
+        settings,
+      })),
+      date: state.date.toISOString(),
+      channelDates: state.channelDates,
+      tags: state.tags,
+      repeater: state.repeater,
+      existing: latest.current.existingData,
+      dummy: latest.current.props.dummy,
+      set: !!latest.current.props.addEditSets,
+    });
+  }, []);
+  const capturePublication = useCallback(async () => {
+    const before = draftSignature();
+    const values = await ref.current?.getAllValues();
+    if (
+      !mounted.current ||
+      before !== draftSignature() ||
+      !values?.length ||
+      values.some((value: any) => !value)
+    )
+      throw new Error('Draft changed. Review and submit again.');
+    return JSON.stringify({ draft: before, values });
+  }, [draftSignature]);
   const toaster = useToaster();
   const modal = useModals();
   const [showSettings, setShowSettings] = useState(false);
@@ -226,6 +286,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
   }, [activateExitButton, dummy]);
 
   const deletePost = useCallback(async () => {
+    if (saving.current || aiBusyRef.current) return;
     setLoading(true);
     if (existingData.siblings?.length) {
       const groups = await new Promise<string[]>((resolve) => {
@@ -315,481 +376,574 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
   }, [existingData, mutate, modal, current, integrations]);
 
   const schedule = useCallback(
-    (type: 'draft' | 'now' | 'schedule' | 'update') => async () => {
-      let republish = false;
-      // the channels saved as another type, the rest are saved as `type`
-      const saveAs: Record<string, 'draft' | 'schedule' | 'update'> = {};
-      const saveTypeOf = (id: string) => saveAs[id] || type;
-      // the channels that already went out, or are going out right now
-      const published = existingPosts.filter(
-        (p) =>
-          p.posts?.[0]?.state === 'PUBLISHED' ||
-          (p.posts?.[0]?.state === 'QUEUE' &&
-            dayjs().isAfter((channelDates[p.integration] || date).utc()))
-      );
-      const others = existingPosts.filter((p) => p !== channel);
-
-      // another channel whose date already passed would go out right away, it
-      // only gets its details saved
-      if (type === 'schedule') {
-        for (const p of others) {
-          if (
-            !published.includes(p) &&
-            dayjs().isAfter((channelDates[p.integration] || date).utc())
-          ) {
-            saveAs[p.integration] = 'update';
-          }
-        }
-      }
-
-      // a draft of a post with other channels leaves the published ones as they are
-      if (type === 'draft' && existingData.siblings?.length) {
-        for (const p of published) {
-          if (p.posts[0].state === 'PUBLISHED') {
-            saveAs[p.integration] = 'update';
-          }
-        }
-      }
-
-      // the save that leaves a channel in its state
-      const asItIs = (p: (typeof existingPosts)[number]) =>
-        p.posts?.[0]?.state === 'DRAFT'
-          ? 'draft'
-          : p.posts?.[0]?.state === 'QUEUE' && !published.includes(p)
-          ? 'schedule'
-          : 'update';
-
-      // like the delete, a save that changes the state of the other channels
-      // (scheduling their drafts, moving them to drafts) can do it only for
-      // the channel in view, the others keep their state
-      if (
-        type !== 'update' &&
-        others.some(
-          (p) =>
-            !saveAs[p.integration] &&
-            // the republish question covers the published ones
-            (type === 'draft' || !published.includes(p)) &&
-            asItIs(p) !== type
+    (
+        type: 'draft' | 'now' | 'schedule' | 'update',
+        expected?: string,
+        signal?: AbortSignal
+      ) =>
+      async (): Promise<AiSubmissionResult> => {
+        if (
+          saving.current ||
+          (!expected && aiBusyRef.current) ||
+          useLaunchStore.getState().locked
         )
-      ) {
-        const question =
-          type === 'draft'
-            ? t(
-                'draft_post_in_all_channels_question',
-                'This post was created for more than one channel. Do you want to move all of them to drafts?'
-              )
-            : type === 'now'
-            ? t(
-                'post_now_in_all_channels_question',
-                'This post was created for more than one channel. Do you want to post all of them now?'
-              )
-            : t(
-                'schedule_post_in_all_channels_question',
-                'This post was created for more than one channel. Do you want to schedule all of them?'
-              );
-
-        const allChannels =
-          type === 'draft'
-            ? t('draft_all_channels', 'Move all channels to drafts')
-            : type === 'now'
-            ? t('post_now_all_channels', 'Post all channels now')
-            : t('schedule_all_channels', 'Schedule all channels');
-
-        const whichChannels = await new Promise((resolve) => {
-          modal.openModal({
-            id: 'change-post-channels',
-            title: t('what_do_you_want_to_do', 'What do you want to do?'),
-            onClose: () => resolve(undefined),
-            children: (
-              <div className="flex flex-col">
-                <div className="text-[20px] mb-[20px]">{question}</div>
-                <div className="flex w-full gap-[10px]">
-                  <div className="flex-1 flex">
-                    <Button
-                      type="button"
-                      className="flex-1"
-                      onClick={() => {
-                        modal.closeById('change-post-channels');
-                        resolve('all');
-                      }}
-                    >
-                      {allChannels}
-                    </Button>
-                  </div>
-                  {/* a published channel in view stays published on a draft */}
-                  {!saveAs[channel.integration] && (
-                    <div className="flex-1 flex">
-                      <Button
-                        type="button"
-                        secondary
-                        className="flex-1"
-                        onClick={() => {
-                          modal.closeById('change-post-channels');
-                          resolve('only');
-                        }}
-                      >
-                        {t('only_channel', 'Only')}{' '}
-                        {
-                          integrations.find((p) => p.id === channel.integration)
-                            ?.name
-                        }
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ),
-          });
-        });
-
-        if (!whichChannels) {
-          return;
-        }
-
-        if (whichChannels === 'only') {
-          for (const p of others) {
-            saveAs[p.integration] = asItIs(p);
-          }
-        }
-      }
-
-      // the published channels that would go out again
-      const republishing = published.filter((p) => !saveAs[p.integration]);
-
-      if ((type === 'now' || type === 'schedule') && republishing.length) {
-        const channels = republishing
-          .map(
+          return { status: 'cancelled' };
+        saving.current = true;
+        const session = useLaunchStore.getState().aiTextSession;
+        const sameSession = () =>
+          mounted.current &&
+          useLaunchStore.getState().aiTextSession === session;
+        let postStarted = false;
+        let accepted = false;
+        let saved = false;
+        setLoading(true);
+        try {
+          const snapshot = expected || (await capturePublication());
+          const checkCurrent = async () => {
+            if (
+              signal?.aborted ||
+              !sameSession() ||
+              snapshot !== (await capturePublication())
+            )
+              throw new Error('AI_DRAFT_CHANGED');
+          };
+          await checkCurrent();
+          let republish = false;
+          // the channels saved as another type, the rest are saved as `type`
+          const saveAs: Record<string, 'draft' | 'schedule' | 'update'> = {};
+          const saveTypeOf = (id: string) => saveAs[id] || type;
+          // the channels that already went out, or are going out right now
+          const published = existingPosts.filter(
             (p) =>
-              `${integrations.find((i) => i.id === p.integration)?.name} ${t(
-                'republish_at',
-                'at'
-              )} ${(channelDates[p.integration] || date).format(
-                'DD/MM/YYYY HH:mm'
-              )}`
-          )
-          .join(', ');
-        const isRecurring =
-          !!repeater || !!existingData?.posts?.[0]?.intervalInDays;
+              p.posts?.[0]?.state === 'PUBLISHED' ||
+              (p.posts?.[0]?.state === 'QUEUE' &&
+                dayjs().isAfter((channelDates[p.integration] || date).utc()))
+          );
+          const others = existingPosts.filter((p) => p !== channel);
 
-        // it closes on a choice, so a save that then fails its checks shows
-        // the channel to fix
-        const whatToDo = await new Promise((resolve) => {
-          modal.openModal({
-            id: 'republish-post',
-            title: t('what_do_you_want_to_do', 'What do you want to do?'),
-            onClose: () => resolve(undefined),
-            children: (
-              <div className="flex flex-col">
-                <div className="text-[20px] mb-[20px]">
-                  {t(
-                    'post_already_published_republish_warning',
-                    'This post was already published. Republishing will publish it again to'
-                  )}{' '}
-                  {channels}.
-                  {isRecurring && (
-                    <div className="mt-[10px]">
-                      {t(
-                        'republish_recurring_note',
-                        'This is a recurring post: your changes apply to all future recurrences starting now.'
+          // another channel whose date already passed would go out right away, it
+          // only gets its details saved
+          if (type === 'schedule') {
+            for (const p of others) {
+              if (
+                !published.includes(p) &&
+                dayjs().isAfter((channelDates[p.integration] || date).utc())
+              ) {
+                saveAs[p.integration] = 'update';
+              }
+            }
+          }
+
+          // a draft of a post with other channels leaves the published ones as they are
+          if (type === 'draft' && existingData.siblings?.length) {
+            for (const p of published) {
+              if (p.posts[0].state === 'PUBLISHED') {
+                saveAs[p.integration] = 'update';
+              }
+            }
+          }
+
+          // the save that leaves a channel in its state
+          const asItIs = (p: (typeof existingPosts)[number]) =>
+            p.posts?.[0]?.state === 'DRAFT'
+              ? 'draft'
+              : p.posts?.[0]?.state === 'QUEUE' && !published.includes(p)
+              ? 'schedule'
+              : 'update';
+
+          // like the delete, a save that changes the state of the other channels
+          // (scheduling their drafts, moving them to drafts) can do it only for
+          // the channel in view, the others keep their state
+          if (
+            type !== 'update' &&
+            others.some(
+              (p) =>
+                !saveAs[p.integration] &&
+                // the republish question covers the published ones
+                (type === 'draft' || !published.includes(p)) &&
+                asItIs(p) !== type
+            )
+          ) {
+            const question =
+              type === 'draft'
+                ? t(
+                    'draft_post_in_all_channels_question',
+                    'This post was created for more than one channel. Do you want to move all of them to drafts?'
+                  )
+                : type === 'now'
+                ? t(
+                    'post_now_in_all_channels_question',
+                    'This post was created for more than one channel. Do you want to post all of them now?'
+                  )
+                : t(
+                    'schedule_post_in_all_channels_question',
+                    'This post was created for more than one channel. Do you want to schedule all of them?'
+                  );
+
+            const allChannels =
+              type === 'draft'
+                ? t('draft_all_channels', 'Move all channels to drafts')
+                : type === 'now'
+                ? t('post_now_all_channels', 'Post all channels now')
+                : t('schedule_all_channels', 'Schedule all channels');
+
+            const whichChannels = await new Promise((resolve) => {
+              const dialogId = makeId(20);
+              modal.openModal({
+                id: dialogId,
+                title: t('what_do_you_want_to_do', 'What do you want to do?'),
+                onClose: () => resolve(undefined),
+                children: (
+                  <div className="flex flex-col">
+                    <div className="text-[20px] mb-[20px]">{question}</div>
+                    <div className="flex w-full gap-[10px]">
+                      <div className="flex-1 flex">
+                        <Button
+                          type="button"
+                          className="flex-1"
+                          onClick={() => {
+                            modal.closeById(dialogId);
+                            resolve('all');
+                          }}
+                        >
+                          {allChannels}
+                        </Button>
+                      </div>
+                      {/* a published channel in view stays published on a draft */}
+                      {!saveAs[channel.integration] && (
+                        <div className="flex-1 flex">
+                          <Button
+                            type="button"
+                            secondary
+                            className="flex-1"
+                            onClick={() => {
+                              modal.closeById(dialogId);
+                              resolve('only');
+                            }}
+                          >
+                            {t('only_channel', 'Only')}{' '}
+                            {
+                              integrations.find(
+                                (p) => p.id === channel.integration
+                              )?.name
+                            }
+                          </Button>
+                        </div>
                       )}
                     </div>
-                  )}
-                </div>
-                <div className="flex w-full gap-[10px]">
-                  <div className="flex-1 flex">
-                    <Button
-                      type="button"
-                      className="flex-1"
-                      onClick={() => {
-                        modal.closeById('republish-post');
-                        resolve('update');
-                      }}
-                    >
-                      {t(
-                        'just_update_post_details',
-                        'Just update the post details'
-                      )}
-                    </Button>
                   </div>
-                  <div className="flex-1 flex">
-                    <Button
-                      type="button"
-                      className="flex-1"
-                      onClick={() => {
-                        modal.closeById('republish-post');
-                        resolve('republish');
-                      }}
-                    >
-                      {t('republish_the_post', 'Republish the post')}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ),
-          });
-        });
-
-        if (!whatToDo) {
-          return;
-        }
-
-        if (whatToDo === 'update') {
-          for (const p of republishing) {
-            saveAs[p.integration] = 'update';
-          }
-        }
-
-        if (whatToDo === 'republish') {
-          republish = true;
-        }
-      }
-
-      setLoading(true);
-
-      // Pull the local values to build the payload, but rely on the server
-      // (`/posts/valid`) for the actual validation — checkValidity now lives
-      // server-side so it can't be bypassed.
-      const allValues = await ref.current.getAllValues();
-
-      const integrationById = (id: string) =>
-        selectedIntegrations.find((p) => p.integration.id === id);
-
-      const group = existingData.group || makeId(10);
-
-      const posts = allValues.map((post: any) => ({
-        integration: {
-          id: post.id,
-        },
-        // every channel of an existing post updates its own post
-        group:
-          existingPosts.find((p) => p.integration === post.id)?.group || group,
-        ...(channelDates[post.id]
-          ? {
-              date: channelDates[post.id].utc().format('YYYY-MM-DDTHH:mm:ss'),
-            }
-          : {}),
-        settings: { ...(post.settings || {}) },
-        value: post.values.map((value: any) => ({
-          ...(value.id ? { id: value.id } : {}),
-          content: value.content,
-          delay: value.delay || 0,
-          image:
-            (value?.media || []).map(
-              ({ id, path, alt, thumbnail, thumbnailTimestamp }: any) => ({
-                id,
-                path,
-                alt,
-                thumbnail,
-                thumbnailTimestamp,
-              })
-            ) || [],
-        })),
-      }));
-
-      if (!dummy) {
-        const checkAllValid = await (
-          await fetch('/posts/valid', {
-            method: 'POST',
-            body: JSON.stringify({ type, posts }),
-          })
-        ).json();
-
-        const focus = (id: string, where: 'fix' | 'preview') => {
-          integrationById(id)?.ref?.current?.[where]?.();
-        };
-
-        const notEnoughChars = checkAllValid.filter((p: any) => p.emptyContent);
-
-        for (const item of notEnoughChars) {
-          toaster.show(
-            `${capitalize(item.identifier.split('-')[0])} (${item.name}):` +
-              ' ' +
-              t(
-                'post_needs_content_or_image',
-                'Your post should have at least one character or one image.'
-              ),
-            'warning'
-          );
-          setLoading(false);
-          focus(item.id, 'preview');
-          return;
-        }
-
-        // a channel saved as a draft gets these checks once it's scheduled
-        const notDrafts = checkAllValid.filter(
-          (p: any) => saveTypeOf(p.id) !== 'draft'
-        );
-
-        for (const item of notDrafts) {
-          if (item.valid === false) {
-            toaster.show(
-              `${capitalize(item.identifier.split('-')[0])} (${item.name}): ${
-                item.settingsError ||
-                t('please_fix_your_settings', 'Please fix your settings')
-              }`,
-              'warning'
-            );
-            focus(item.id, 'fix');
-            setLoading(false);
-            setShowSettings(true);
-            return;
-          }
-
-          if (item.errors !== true) {
-            toaster.show(
-              `${capitalize(item.identifier.split('-')[0])} (${item.name}): ${
-                item.errors
-              }`,
-              'warning'
-            );
-            focus(item.id, 'preview');
-            setLoading(false);
-            setShowSettings(false);
-            return;
-          }
-
-          if (item.tooLong) {
-            toaster.show(
-              `${item.name} (${item.identifier}) ${t(
-                'post_is_too_long',
-                'post is too long, please fix it'
-              )}`,
-              'warning'
-            );
-            focus(item.id, 'preview');
-            setLoading(false);
-            return;
-          }
-        }
-      }
-
-      const shortlinkPreference = shortlinkPreferenceData?.shortlink || 'ASK';
-
-      let shortLink = false;
-
-      if (!dummy && shortlinkPreference !== 'NO') {
-        const shortLinkUrl = await (
-          await fetch('/posts/should-shortlink', {
-            method: 'POST',
-            body: JSON.stringify({
-              messages: allValues
-                // platforms that remove links won't keep shortlinks either
-                .filter(
-                  (p: any) => !integrationById(p.id)?.integration?.stripLinks
-                )
-                .flatMap((p: any) => p.values.flatMap((a: any) => a.content)),
-            }),
-          })
-        ).json();
-
-        if (shortLinkUrl.ask) {
-          if (shortlinkPreference === 'YES') {
-            // Automatically shortlink without asking
-            shortLink = true;
-          } else {
-            // ASK: Show the dialog
-            shortLink = await deleteDialog(
-              t(
-                'shortlink_urls_question',
-                'Do you want to shortlink the URLs? it will let you get statistics over clicks'
-              ),
-              t('yes_shortlink_it', 'Yes, shortlink it!'),
-              undefined,
-              t('no_original_urls', 'No, original URLs')
-            );
-          }
-        }
-      }
-
-      const data = {
-        type,
-        ...(republish ? { republish } : {}),
-        ...(repeater ? { inter: repeater } : {}),
-        tags,
-        shortLink,
-        date: date.utc().format('YYYY-MM-DDTHH:mm:ss'),
-        posts,
-      };
-
-      if (dummy) {
-        modal.openModal({
-          title: '',
-          children: <DummyCodeComponent code={data} />,
-          classNames: {
-            modal: 'w-[100%] bg-transparent text-textColor',
-          },
-          size: '100%',
-          withCloseButton: false,
-          closeOnEscape: true,
-          closeOnClickOutside: true,
-        });
-
-        setLoading(false);
-      }
-
-      if (!dummy) {
-        if (addEditSets) {
-          addEditSets(data);
-        } else {
-          // every type of save is its own request, the drafts last, since a
-          // draft save skips the checks the others still run
-          let saved = false;
-          for (const requestType of ['update', 'schedule', 'now', 'draft']) {
-            const request = {
-              type: requestType,
-              posts: posts.filter(
-                (p: any) => saveTypeOf(p.integration.id) === requestType
-              ),
-            };
-            if (!request.posts.length) {
-              continue;
-            }
-
-            const response = await fetch('/posts', {
-              method: 'POST',
-              body: JSON.stringify({ ...data, ...request }),
+                ),
+              });
             });
 
-            if (!response.ok) {
-              if (response.status !== 402) {
-                const { message } = await response.json().catch(() => ({}));
+            await checkCurrent();
+            if (!whichChannels) {
+              return { status: 'cancelled' };
+            }
+
+            if (whichChannels === 'only') {
+              for (const p of others) {
+                saveAs[p.integration] = asItIs(p);
+              }
+            }
+          }
+
+          // the published channels that would go out again
+          const republishing = published.filter((p) => !saveAs[p.integration]);
+
+          if ((type === 'now' || type === 'schedule') && republishing.length) {
+            const channels = republishing
+              .map(
+                (p) =>
+                  `${
+                    integrations.find((i) => i.id === p.integration)?.name
+                  } ${t('republish_at', 'at')} ${(
+                    channelDates[p.integration] || date
+                  ).format('DD/MM/YYYY HH:mm')}`
+              )
+              .join(', ');
+            const isRecurring =
+              !!repeater || !!existingData?.posts?.[0]?.intervalInDays;
+
+            // it closes on a choice, so a save that then fails its checks shows
+            // the channel to fix
+            const whatToDo = await new Promise((resolve) => {
+              const dialogId = makeId(20);
+              modal.openModal({
+                id: dialogId,
+                title: t('what_do_you_want_to_do', 'What do you want to do?'),
+                onClose: () => resolve(undefined),
+                children: (
+                  <div className="flex flex-col">
+                    <div className="text-[20px] mb-[20px]">
+                      {t(
+                        'post_already_published_republish_warning',
+                        'This post was already published. Republishing will publish it again to'
+                      )}{' '}
+                      {channels}.
+                      {isRecurring && (
+                        <div className="mt-[10px]">
+                          {t(
+                            'republish_recurring_note',
+                            'This is a recurring post: your changes apply to all future recurrences starting now.'
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex w-full gap-[10px]">
+                      <div className="flex-1 flex">
+                        <Button
+                          type="button"
+                          className="flex-1"
+                          onClick={() => {
+                            modal.closeById(dialogId);
+                            resolve('update');
+                          }}
+                        >
+                          {t(
+                            'just_update_post_details',
+                            'Just update the post details'
+                          )}
+                        </Button>
+                      </div>
+                      <div className="flex-1 flex">
+                        <Button
+                          type="button"
+                          className="flex-1"
+                          onClick={() => {
+                            modal.closeById(dialogId);
+                            resolve('republish');
+                          }}
+                        >
+                          {t('republish_the_post', 'Republish the post')}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ),
+              });
+            });
+
+            await checkCurrent();
+            if (!whatToDo) {
+              return { status: 'cancelled' };
+            }
+
+            if (whatToDo === 'update') {
+              for (const p of republishing) {
+                saveAs[p.integration] = 'update';
+              }
+            }
+
+            if (whatToDo === 'republish') {
+              republish = true;
+            }
+          }
+
+          // Pull the local values to build the payload, but rely on the server
+          // (`/posts/valid`) for the actual validation — checkValidity now lives
+          // server-side so it can't be bypassed.
+          const allValues = await ref.current.getAllValues();
+          await checkCurrent();
+
+          const integrationById = (id: string) =>
+            selectedIntegrations.find((p) => p.integration.id === id);
+
+          const group = existingData.group || makeId(10);
+
+          const posts = allValues.map((post: any) => ({
+            integration: {
+              id: post.id,
+            },
+            // every channel of an existing post updates its own post
+            group:
+              existingPosts.find((p) => p.integration === post.id)?.group ||
+              group,
+            ...(channelDates[post.id]
+              ? {
+                  date: channelDates[post.id]
+                    .utc()
+                    .format('YYYY-MM-DDTHH:mm:ss'),
+                }
+              : {}),
+            settings: { ...(post.settings || {}) },
+            value: post.values.map((value: any) => ({
+              ...(value.id ? { id: value.id } : {}),
+              content: value.content,
+              delay: value.delay || 0,
+              image:
+                (value?.media || []).map(
+                  ({ id, path, alt, thumbnail, thumbnailTimestamp }: any) => ({
+                    id,
+                    path,
+                    alt,
+                    thumbnail,
+                    thumbnailTimestamp,
+                  })
+                ) || [],
+            })),
+          }));
+
+          if (!dummy) {
+            const validationResponse = await fetch('/posts/valid', {
+              method: 'POST',
+              body: JSON.stringify({ type, posts }),
+            });
+            await checkCurrent();
+            if (!validationResponse.ok) throw new Error('VALIDATION_FAILED');
+            const checkAllValid = await validationResponse.json();
+            await checkCurrent();
+
+            const focus = (id: string, where: 'fix' | 'preview') => {
+              integrationById(id)?.ref?.current?.[where]?.();
+            };
+
+            const notEnoughChars = checkAllValid.filter(
+              (p: any) => p.emptyContent
+            );
+
+            for (const item of notEnoughChars) {
+              toaster.show(
+                `${capitalize(item.identifier.split('-')[0])} (${item.name}):` +
+                  ' ' +
+                  t(
+                    'post_needs_content_or_image',
+                    'Your post should have at least one character or one image.'
+                  ),
+                'warning'
+              );
+              setLoading(false);
+              focus(item.id, 'preview');
+              return { status: 'validation-failed' };
+            }
+
+            // a channel saved as a draft gets these checks once it's scheduled
+            const notDrafts = checkAllValid.filter(
+              (p: any) => saveTypeOf(p.id) !== 'draft'
+            );
+
+            for (const item of notDrafts) {
+              if (item.valid === false) {
                 toaster.show(
-                  typeof message === 'string'
-                    ? message
-                    : t('post_save_failed', 'Could not save the post'),
+                  `${capitalize(item.identifier.split('-')[0])} (${
+                    item.name
+                  }): ${
+                    item.settingsError ||
+                    t('please_fix_your_settings', 'Please fix your settings')
+                  }`,
                   'warning'
                 );
+                focus(item.id, 'fix');
+                setLoading(false);
+                setShowSettings(true);
+                return { status: 'validation-failed' };
               }
-              // the channels saved before the failure show in the calendar
-              if (saved) {
-                mutate();
+
+              if (item.errors !== true) {
+                toaster.show(
+                  `${capitalize(item.identifier.split('-')[0])} (${
+                    item.name
+                  }): ${item.errors}`,
+                  'warning'
+                );
+                focus(item.id, 'preview');
+                setLoading(false);
+                setShowSettings(false);
+                return { status: 'validation-failed' };
               }
-              setLoading(false);
-              return;
+
+              if (item.tooLong) {
+                toaster.show(
+                  `${item.name} (${item.identifier}) ${t(
+                    'post_is_too_long',
+                    'post is too long, please fix it'
+                  )}`,
+                  'warning'
+                );
+                focus(item.id, 'preview');
+                setLoading(false);
+                return { status: 'validation-failed' };
+              }
             }
-            saved = true;
           }
-        }
 
-        if (!addEditSets) {
-          mutate();
-          toaster.show(
-            !existingData.integration
-              ? t('added_successfully', 'Added successfully')
-              : t('updated_successfully', 'Updated successfully')
-          );
-        }
-        if (customClose) {
-          setTimeout(() => {
-            customClose();
-          }, 2000);
-        }
+          const shortlinkPreference =
+            shortlinkPreferenceData?.shortlink || 'ASK';
 
-        if (!addEditSets) {
-          modal.closeAll();
+          let shortLink = false;
+
+          if (!dummy && shortlinkPreference !== 'NO') {
+            const shortlinkResponse = await fetch('/posts/should-shortlink', {
+              method: 'POST',
+              body: JSON.stringify({
+                messages: allValues
+                  // platforms that remove links won't keep shortlinks either
+                  .filter(
+                    (p: any) => !integrationById(p.id)?.integration?.stripLinks
+                  )
+                  .flatMap((p: any) => p.values.flatMap((a: any) => a.content)),
+              }),
+            });
+            await checkCurrent();
+            if (!shortlinkResponse.ok) throw new Error('SHORTLINK_FAILED');
+            const shortLinkUrl = await shortlinkResponse.json();
+            await checkCurrent();
+
+            if (shortLinkUrl.ask) {
+              if (shortlinkPreference === 'YES') {
+                // Automatically shortlink without asking
+                shortLink = true;
+              } else {
+                // ASK: Show the dialog
+                shortLink = await deleteDialog(
+                  t(
+                    'shortlink_urls_question',
+                    'Do you want to shortlink the URLs? it will let you get statistics over clicks'
+                  ),
+                  t('yes_shortlink_it', 'Yes, shortlink it!'),
+                  undefined,
+                  t('no_original_urls', 'No, original URLs')
+                );
+                await checkCurrent();
+              }
+            }
+          }
+
+          const data = {
+            type,
+            ...(republish ? { republish } : {}),
+            ...(repeater ? { inter: repeater } : {}),
+            tags,
+            shortLink,
+            date: date.utc().format('YYYY-MM-DDTHH:mm:ss'),
+            posts,
+          };
+
+          await checkCurrent();
+
+          if (dummy) {
+            modal.openModal({
+              title: '',
+              children: <DummyCodeComponent code={data} />,
+              classNames: {
+                modal: 'w-[100%] bg-transparent text-textColor',
+              },
+              size: '100%',
+              withCloseButton: false,
+              closeOnEscape: true,
+              closeOnClickOutside: true,
+            });
+
+            setLoading(false);
+          }
+
+          if (!dummy) {
+            if (addEditSets) {
+              addEditSets(data);
+            } else {
+              // every type of save is its own request, the drafts last, since a
+              // draft save skips the checks the others still run
+              for (const requestType of [
+                'update',
+                'schedule',
+                'now',
+                'draft',
+              ]) {
+                const request = {
+                  type: requestType,
+                  posts: posts.filter(
+                    (p: any) => saveTypeOf(p.integration.id) === requestType
+                  ),
+                };
+                if (!request.posts.length) {
+                  continue;
+                }
+
+                await checkCurrent();
+                postStarted = true;
+                const response = await fetch('/posts', {
+                  method: 'POST',
+                  body: JSON.stringify({ ...data, ...request }),
+                });
+
+                if (!response.ok) {
+                  if (response.status >= 500)
+                    throw new Error('POST_OUTCOME_UNKNOWN');
+                  postStarted = false;
+                  if (saved) throw new Error('POST_PARTIALLY_SAVED');
+                  if (!sameSession()) return { status: 'failed' };
+                  if (response.status !== 402) {
+                    const { message } = await response.json().catch(() => ({}));
+                    if (!sameSession()) return { status: 'failed' };
+                    toaster.show(
+                      typeof message === 'string'
+                        ? message
+                        : t('post_save_failed', 'Could not save the post'),
+                      'warning'
+                    );
+                  }
+                  setLoading(false);
+                  return { status: 'failed' };
+                }
+                postStarted = false;
+                saved = true;
+              }
+              accepted = true;
+            }
+
+            if (!sameSession()) return { status: 'accepted' };
+
+            if (!addEditSets) {
+              mutate();
+              toaster.show(
+                !existingData.integration
+                  ? t('added_successfully', 'Added successfully')
+                  : t('updated_successfully', 'Updated successfully')
+              );
+            }
+            if (customClose) {
+              setTimeout(() => {
+                if (sameSession()) customClose();
+              }, 2000);
+            }
+
+            if (!addEditSets) {
+              modal.closeAll();
+            }
+          }
+          return { status: 'accepted' };
+        } catch (error) {
+          const status = accepted
+            ? 'accepted'
+            : postStarted || saved
+            ? 'unknown'
+            : signal?.aborted ||
+              !sameSession() ||
+              (error instanceof Error && error.message === 'AI_DRAFT_CHANGED')
+            ? 'cancelled'
+            : 'failed';
+          if (sameSession() && saved && !accepted) mutate();
+          if (sameSession())
+            toaster.show(
+              status === 'unknown'
+                ? t(
+                    'ai_save_unknown',
+                    'Save status is unknown. Check the calendar before posting again to avoid duplicates.'
+                  )
+                : status === 'cancelled'
+                ? t(
+                    'ai_draft_changed',
+                    'Draft changed or submission cancelled. Review it before submitting again.'
+                  )
+                : t('post_save_failed', 'Could not save the post'),
+              'warning'
+            );
+          return { status };
+        } finally {
+          saving.current = false;
+          if (sameSession()) setLoading(false);
         }
-      }
-    },
+      },
     [
       ref,
       repeater,
@@ -798,11 +952,120 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
       channelDates,
       current,
       integrations,
-      selectedIntegrations,
       addEditSets,
       dummy,
       shortlinkPreferenceData,
+      selectedIntegrations,
+      existingData,
+      mutate,
+      modal,
+      customClose,
+      fetch,
+      toaster,
+      t,
+      capturePublication,
     ]
+  );
+
+  const applyAndSubmit = useCallback(
+    async (
+      candidate: AiTextCandidate,
+      intent: 'now' | 'schedule',
+      expected: string,
+      signal: AbortSignal
+    ): Promise<AiSubmissionResult> => {
+      if (
+        dummy ||
+        addEditSets ||
+        saving.current ||
+        signal.aborted ||
+        expected !== (await capturePublication())
+      )
+        return { status: 'cancelled' };
+      const publication = JSON.parse(expected);
+      const intended = JSON.parse(publication.draft);
+      const override = intended.internal.find(
+        (item: any) => item.id === candidate.source.scope
+      );
+      const blocks = (override?.integrationValue || intended.global).map(
+        (block: any, index: number) => ({
+          ...block,
+          content: plainTextToPostHtml(
+            candidate.response.blocks[index].content
+          ),
+        })
+      );
+      if (candidate.source.scope === 'global') intended.global = blocks;
+      else if (override) override.integrationValue = blocks;
+      else
+        intended.internal.push({
+          id: candidate.source.scope,
+          integrationValue: blocks,
+        });
+      const textById = new Map<string, string>(
+        blocks.map((block: { id: string; content: string }) => [
+          block.id,
+          block.content,
+        ])
+      );
+      const intendedPublication = JSON.stringify({
+        draft: JSON.stringify(intended),
+        values: publication.values.map((post: any) => {
+          const applies =
+            candidate.source.scope === 'global'
+              ? !intended.internal.some((item: any) => item.id === post.id)
+              : candidate.source.scope === post.id;
+          return applies
+            ? {
+                ...post,
+                values: post.values.map((block: any) => ({
+                  ...block,
+                  content: textById.get(block.id),
+                })),
+              }
+            : post;
+        }),
+      });
+      let applied = false;
+      // Commit subscribers before reading native provider refs; a store write alone
+      // leaves their imperative handles pointing at the previous render.
+      flushSync(() => {
+        applied = useLaunchStore
+          .getState()
+          .applyAiText(candidate.source, candidate.response.blocks).applied;
+      });
+      if (
+        !applied ||
+        signal.aborted ||
+        draftSignature() !== JSON.stringify(intended)
+      )
+        return { status: 'cancelled' };
+      const committed = await capturePublication();
+      // Live form settings can change without a Zustand update. Only the
+      // authorized text may differ from the original provider snapshot.
+      if (committed !== intendedPublication) return { status: 'cancelled' };
+      const values = JSON.parse(committed).values;
+      const state = useLaunchStore.getState();
+      if (
+        state.aiTextSession !== candidate.source.session ||
+        values.some((post: any) => {
+          const blocks =
+            state.internal.find((item) => item.integration.id === post.id)
+              ?.integrationValue || state.global;
+          return (
+            post.values.length !== blocks.length ||
+            post.values.some(
+              (block: any, index: number) =>
+                block.id !== blocks[index].id ||
+                block.content !== blocks[index].content
+            )
+          );
+        })
+      )
+        return { status: 'cancelled' };
+      return schedule(intent, intendedPublication, signal)();
+    },
+    [dummy, addEditSets, capturePublication, schedule, draftSignature]
   );
 
   const scheduleLabel = dummy
@@ -887,7 +1150,9 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         <MobileTopBar
           onBack={askClose}
           actions={mobileActions}
-          disabled={selectedIntegrations.length === 0 || loading || locked}
+          disabled={
+            selectedIntegrations.length === 0 || loading || locked || aiBusy
+          }
           loading={loading}
         >
           <DatePicker
@@ -978,6 +1243,13 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                         </>
                       )}
                     </div>
+                    <AiTextAssistant
+                      disabled={locked || loading}
+                      canPublish={!dummy && !addEditSets}
+                      onBusyChange={changeAiBusy}
+                      capturePublication={capturePublication}
+                      onApplyAndSubmit={applyAndSubmit}
+                    />
                     <div
                       className={clsx(
                         'flex-1 flex',
@@ -1109,6 +1381,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
           <div className="pe-[20px] flex items-center justify-end gap-[8px]">
             {existingData?.integration && (
               <button
+                disabled={loading || locked || aiBusy}
                 onClick={deletePost}
                 className="cursor-pointer flex text-[#FF3F3F] gap-[8px] items-center text-[15px] font-[600]"
               >
@@ -1122,7 +1395,10 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
             {!addEditSets && (
               <button
                 disabled={
-                  selectedIntegrations.length === 0 || loading || locked
+                  selectedIntegrations.length === 0 ||
+                  loading ||
+                  locked ||
+                  aiBusy
                 }
                 onClick={schedule('draft')}
                 className="relative cursor-pointer disabled:cursor-not-allowed px-[20px] h-[44px] bg-btnSimple justify-center items-center flex rounded-[8px] text-[15px] font-[600]"
@@ -1141,7 +1417,10 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
               <button
                 className="text-white text-[15px] font-[600] min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#612BD3] ps-[20px] pe-[16px]"
                 disabled={
-                  selectedIntegrations.length === 0 || loading || locked
+                  selectedIntegrations.length === 0 ||
+                  loading ||
+                  locked ||
+                  aiBusy
                 }
                 onClick={schedule('draft')}
               >
@@ -1152,7 +1431,10 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
               <div ref={postNowRef} className="group cursor-pointer relative">
                 <button
                   disabled={
-                    selectedIntegrations.length === 0 || loading || locked
+                    selectedIntegrations.length === 0 ||
+                    loading ||
+                    locked ||
+                    aiBusy
                   }
                   onClick={schedule('schedule')}
                   className="text-white relative min-w-[180px] btnSub disabled:cursor-not-allowed disabled:opacity-80 outline-none gap-[8px] flex justify-center items-center h-[44px] rounded-[8px] bg-[#612BD3] ps-[20px] pe-[16px]"
@@ -1194,7 +1476,10 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                   <button
                     onClick={schedule('now')}
                     disabled={
-                      selectedIntegrations.length === 0 || loading || locked
+                      selectedIntegrations.length === 0 ||
+                      loading ||
+                      locked ||
+                      aiBusy
                     }
                     className={clsx(
                       'rounded-[8px] z-[300] disabled:cursor-not-allowed disabled:opacity-80 absolute bottom-[100%] -left-[12px] p-[12px] w-[206px] bg-newBgColorInner',
@@ -1334,29 +1619,6 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
           />
         </BottomSheet>
       )}
-      <CopilotPopup
-        className="mobile:!z-[460] mobile:!bottom-[112px]"
-        hitEscapeToClose={false}
-        clickOutsideToClose={true}
-        instructions={`
-You are an assistant that help the user to schedule their social media posts,
-Here are the things you can do:
-- Add a new comment / post to the list of posts
-- Delete a comment / post from the list of posts
-- Add content to the comment / post
-- Activate or deactivate the comment / post
-
-Post content can be added using the addPostContentFor{num} function.
-After using the addPostFor{num} it will create a new addPostContentFor{num+ 1} function.
-`}
-        labels={{
-          title: t('your_assistant', 'Your Assistant'),
-          initial: t(
-            'assistant_initial_message',
-            'Hi! I can help you to refine your social media posts.'
-          ),
-        }}
-      />
     </div>
   );
 };

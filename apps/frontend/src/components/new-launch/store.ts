@@ -6,6 +6,8 @@ import { Integrations } from '@gitroom/frontend/components/launches/calendar.con
 import { createRef, RefObject } from 'react';
 import { PostComment } from '@gitroom/frontend/components/new-launch/providers/post-comment.enum';
 import { newDayjs } from '@gitroom/frontend/components/layout/set.timezone';
+import type { AiTextBlock } from '@gitroom/nestjs-libraries/dtos/posts/ai.text.dto';
+import { plainTextToPostHtml } from '@gitroom/helpers/utils/sanitize.post.content';
 
 interface Values {
   id: string;
@@ -25,7 +27,26 @@ export interface SelectedIntegrations {
   ref?: RefObject<any>;
 }
 
+export interface AiTextSourceSnapshot {
+  session: number;
+  scope: string;
+  editor: StoreState['editor'];
+  selectedIntegrationIds: string[];
+  internalExists: boolean;
+  blocks: { id: string; content: string }[];
+}
+
+export type AiTextApplyResult =
+  | { applied: true }
+  | { applied: false; reason: 'stale' | 'invalid' };
+
 interface StoreState {
+  aiTextSession: number;
+  captureAiTextSource: () => AiTextSourceSnapshot;
+  applyAiText: (
+    expected: AiTextSourceSnapshot,
+    blocks: AiTextBlock[]
+  ) => AiTextApplyResult;
   editor: undefined | 'none' | 'normal' | 'markdown' | 'html';
   inlineImages: boolean;
   loaded: boolean;
@@ -141,6 +162,7 @@ interface StoreState {
 }
 
 const initialState = {
+  aiTextSession: 0,
   editor: undefined as undefined,
   inlineImages: false,
   loaded: true,
@@ -164,8 +186,102 @@ const initialState = {
   chars: {},
 };
 
-export const useLaunchStore = create<StoreState>()((set) => ({
+export const useLaunchStore = create<StoreState>()((set, get) => ({
   ...initialState,
+  captureAiTextSource: () => {
+    const state = get();
+    const internal = state.internal.find(
+      (item) => item.integration.id === state.current
+    );
+    return {
+      session: state.aiTextSession,
+      scope: state.current,
+      editor: state.editor,
+      selectedIntegrationIds: state.selectedIntegrations.map(
+        (item) => item.integration.id
+      ),
+      internalExists: !!internal,
+      blocks: (internal?.integrationValue || state.global).map(
+        ({ id, content }) => ({ id, content })
+      ),
+    };
+  },
+  applyAiText: (expected, blocks) => {
+    let result: AiTextApplyResult = { applied: false, reason: 'stale' };
+    set((state) => {
+      const internal = state.internal.find(
+        (item) => item.integration.id === state.current
+      );
+      const source = internal?.integrationValue || state.global;
+      const selectedIds = state.selectedIntegrations.map(
+        (item) => item.integration.id
+      );
+      if (
+        state.aiTextSession !== expected.session ||
+        state.current !== expected.scope ||
+        state.editor !== expected.editor ||
+        !!internal !== expected.internalExists ||
+        selectedIds.length !== expected.selectedIntegrationIds.length ||
+        selectedIds.some(
+          (id, index) => id !== expected.selectedIntegrationIds[index]
+        ) ||
+        source.length !== expected.blocks.length ||
+        source.some(
+          (item, index) =>
+            item.id !== expected.blocks[index].id ||
+            item.content !== expected.blocks[index].content
+        )
+      ) {
+        return state;
+      }
+
+      const integration = state.selectedIntegrations.find(
+        (item) => item.integration.id === state.current
+      )?.integration;
+      if (
+        (state.current !== 'global' && !integration) ||
+        !Array.isArray(blocks) ||
+        !source.length ||
+        source.length > 10 ||
+        blocks.length !== source.length ||
+        new Set(source.map((item) => item.id)).size !== source.length ||
+        source.some((sourceItem, index) => {
+          const item = blocks[index];
+          return (
+            !item ||
+            Object.keys(item).length !== 2 ||
+            item.id !== sourceItem.id ||
+            typeof item.content !== 'string' ||
+            !item.content.trim()
+          );
+        }) ||
+        blocks.reduce((total, item) => total + item.content.length, 0) > 20000
+      ) {
+        result = { applied: false, reason: 'invalid' };
+        return state;
+      }
+
+      const values = source.map((item, index) => ({
+        ...item,
+        content: plainTextToPostHtml(blocks[index].content),
+      }));
+      result = { applied: true };
+      if (state.current === 'global') {
+        return { global: values };
+      }
+      return {
+        internal: internal
+          ? state.internal.map((item) =>
+              item === internal ? { ...item, integrationValue: values } : item
+            )
+          : [
+              ...state.internal,
+              { integration: integration!, integrationValue: values },
+            ],
+      };
+    });
+    return result;
+  },
   setCurrent: (current: string) =>
     set((state) => ({
       current: current,
@@ -520,6 +636,7 @@ export const useLaunchStore = create<StoreState>()((set) => ({
     set((state) => ({
       ...state,
       ...initialState,
+      aiTextSession: state.aiTextSession + 1,
     })),
   setAllIntegrations: (integrations: Integrations[]) =>
     set((state) => ({

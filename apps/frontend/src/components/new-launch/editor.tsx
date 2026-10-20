@@ -29,7 +29,6 @@ import { MultiMediaComponent } from '@gitroom/frontend/components/media/media.co
 import { UpDownArrow } from '@gitroom/frontend/components/launches/up.down.arrow';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useExistingData } from '@gitroom/frontend/components/launches/helpers/use.existing.data';
-import { useCopilotAction, useCopilotReadable } from '@copilotkit/react-core';
 import { useDropzone } from 'react-dropzone';
 import { useUppyUploader } from '@gitroom/frontend/components/media/new.uploader';
 import { Dashboard } from '@uppy/react';
@@ -41,6 +40,7 @@ import {
   Node,
   mergeAttributes,
 } from '@tiptap/react';
+import { createDocument } from '@tiptap/core';
 import Document from '@tiptap/extension-document';
 import Bold from '@tiptap/extension-bold';
 import Text from '@tiptap/extension-text';
@@ -122,10 +122,7 @@ const EditorImage = Node.create({
   },
 });
 
-const insertImages = (
-  editor: any,
-  media: { path: string; alt?: string }[]
-) => {
+const insertImages = (editor: any, media: { path: string; alt?: string }[]) => {
   if (!media.length) {
     return;
   }
@@ -165,8 +162,6 @@ export const EditorWrapper: FC<{
     isCreateSet,
     deleteGlobalValue,
     deleteInternalValue,
-    setGlobalValue,
-    setInternalValue,
     setInternalDelay,
     setGlobalDelay,
     internalFromAll,
@@ -200,8 +195,6 @@ export const EditorWrapper: FC<{
       isCreateSet: state.isCreateSet,
       deleteGlobalValue: state.deleteGlobalValue,
       deleteInternalValue: state.deleteInternalValue,
-      setGlobalValue: state.setGlobalValue,
-      setInternalValue: state.setInternalValue,
       setGlobalDelay: state.setGlobalDelay,
       setInternalDelay: state.setInternalDelay,
       totalChars: state.totalChars,
@@ -247,47 +240,6 @@ export const EditorWrapper: FC<{
   // without comments only the first post is shown
   const last = comments ? items.length - 1 : 0;
   const active = canEdit ? Math.min(activeIndex ?? last, last) : -1;
-
-  const setValue = useCallback(
-    (value: string[]) => {
-      const newValue = value.map((p, index) => {
-        return {
-          id: makeId(10),
-          delay: 0,
-          ...(items?.[index]?.media
-            ? { media: items[index].media }
-            : { media: [] }),
-          content: p,
-        };
-      });
-      if (internal) {
-        return setInternalValue(current, newValue);
-      }
-
-      return setGlobalValue(newValue);
-    },
-    [internal, items]
-  );
-
-  useCopilotReadable({
-    description: 'Current content of posts',
-    value: items.map((p) => p.content),
-  });
-
-  useCopilotAction({
-    name: 'setPosts',
-    description: 'a thread of posts',
-    parameters: [
-      {
-        name: 'content',
-        type: 'string[]',
-        description: 'a thread of posts',
-      },
-    ],
-    handler: async ({ content }) => {
-      setValue(content);
-    },
-  });
 
   const changeValue = useCallback(
     (index: number) => (value: string) => {
@@ -1117,13 +1069,17 @@ export const Editor: FC<{
                           ? clsx(
                               'post-toolbar mobile:fixed mobile:bottom-0 mobile:inset-x-0 mobile:items-center mobile:px-[16px] mobile:py-[12px] mobile:bg-newBgColorInner',
                               // the picker opens from the bar and has to cover the top bar
-                              emojiPickerOpen ? 'mobile:z-[500]' : 'mobile:z-[440]'
+                              emojiPickerOpen
+                                ? 'mobile:z-[500]'
+                                : 'mobile:z-[440]'
                             )
                           : 'mobile:hidden'
                         : undefined
                     }
                     toolsStyle={
-                      flat && active && keyboard ? { bottom: keyboard } : undefined
+                      flat && active && keyboard
+                        ? { bottom: keyboard }
+                        : undefined
                     }
                     toolBarEnd={
                       flat && active ? (
@@ -1355,6 +1311,16 @@ export const OnlyEditor = forwardRef<
       onChange?.(innerProps.editor.getHTML());
     },
   });
+
+  useEffect(() => {
+    if (!editor || editor.getHTML() === (value || '')) {
+      return;
+    }
+    const document = createDocument(value || '', editor.schema);
+    if (!editor.state.doc.eq(document)) {
+      editor.commands.setContent(document, { emitUpdate: false });
+    }
+  }, [editor, value]);
 
   useImperativeHandle(ref, () => ({
     editor,

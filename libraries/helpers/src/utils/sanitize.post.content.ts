@@ -64,3 +64,18 @@ export const postContentPlainText = (value: unknown): string => {
 
   return walk(parseFragment(sanitizePostContent(value)).childNodes as any[]);
 };
+
+export const plainTextToPostHtml = (text: string): string =>
+  text
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(
+      (line) =>
+        `<p>${line
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;')}</p>`
+    )
+    .join('');
