@@ -2,6 +2,8 @@
 
 Configure `OPENROUTER_API_KEY` on the server. `OPENROUTER_MODEL` defaults to `openai/gpt-4.1-mini`; a replacement must support the strict structured response used by this endpoint. Credentials never belong in browser configuration. A configured capability only confirms that a key is present. It does not confirm valid credentials, credit, model availability, or provider delivery.
 
+`OPENROUTER_REASONING_EFFORT` optionally sets `none`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max`. Leave it empty to omit the override. The selected model must support the value; required-parameter routing prevents silently dropping it. Reasoning and visible output share the existing 4,000-token completion budget and 30-second server deadline. For Cahaves, use `OPENROUTER_MODEL="openai/gpt-6-luna"` and `OPENROUTER_REASONING_EFFORT="max"`, passing both through the deployment's environment mapping.
+
 Open a post and select its channels. The inline AI writing panel works on the current shared text or channel version. It keeps a short conversation in the open composer only. Refinement uses the latest suggestion; the last six conversation messages are retained, each limited to 2,000 characters. Applying a suggestion replaces text formatting with plain text while preserving existing media, block order, delays, settings, tags, scheduling, and repeat settings. Applying to an inherited channel creates its separate text version. Global writing is unavailable when every selected channel has its own text version.
 
 Choose the action before sending:
@@ -25,6 +27,8 @@ Expand **Writing preferences** in the AI panel. An administrator can save a shar
 Save or discard edits before generating. Saving persists the profile across composer sessions. Concurrent administrator edits return a conflict; reload the saved version before continuing. Generation includes the displayed profile revision and rejects a stale revision before contacting OpenRouter. Changes to the workspace or profile invalidate suggestions and cancel pending publication validation. If a save may already have reached the server, check the calendar before retrying.
 
 Every native writing request uses the saved profile and guidance from the selected providers. A current explicit writing instruction can override saved style. Examples influence phrasing only; brand claims belong in Brand facts. This is prompt personalization, not fine-tuning or automatic learning from social metrics. No outside post is stored as an approved brand example. Reply text can be drafted from pasted context; the feature does not fetch an inbox or send replies to comments.
+
+Introductions, launches and promotional briefs default to one relevant CTA at the end, or the end of the final thread part. Saved brand facts can supply the verified website or next step. Explicit requests for no CTA still take priority. Educational posts and replies do not acquire an unrelated sales pitch, and the assistant must not invent offers or assume a link is in the profile bio.
 
 The private authenticated GET/POST `/posts/ai-text/profile` routes store a separate `AiWritingProfile` row. They are not added to the public API, MCP or webhooks. Profile saves use optimistic revisions and strict bounds. Generation sends only the selected profile fields, bounded text and provider guidance, never integration credentials or account settings. Install the additive database schema before rolling out this code; the Cahaves startup intentionally does not synchronize it.
 

@@ -395,11 +395,13 @@ describe('bounded OpenRouter transport', () => {
     service = new AiTextService(redis as never, writingProfiles as never);
     process.env.OPENROUTER_API_KEY = '  provider-secret  ';
     delete process.env.OPENROUTER_MODEL;
+    delete process.env.OPENROUTER_REASONING_EFFORT;
     globalThis.fetch = providerFetch();
   });
   afterEach(() => {
     delete process.env.OPENROUTER_API_KEY;
     delete process.env.OPENROUTER_MODEL;
+    delete process.env.OPENROUTER_REASONING_EFFORT;
   });
   it('sends one fixed OpenRouter call with exact schema and no tools', async () => {
     process.env.OPENROUTER_MODEL = '  openai/gpt-4.1-mini  ';
@@ -429,9 +431,52 @@ describe('bounded OpenRouter transport', () => {
       },
     });
     expect(body.tools).toBeUndefined();
+    expect(body.reasoning).toBeUndefined();
     expect(body.messages).toHaveLength(2);
     expect(redis.data.size).toBe(0);
   });
+  it('passes the configured reasoning effort without changing output bounds', async () => {
+    process.env.OPENROUTER_MODEL = 'openai/gpt-6-luna';
+    process.env.OPENROUTER_REASONING_EFFORT = '  max  ';
+    await service.generate('org-a', request, []);
+    const body = JSON.parse(
+      (globalThis.fetch as jest.Mock).mock.calls[0][1].body
+    );
+    expect(body).toMatchObject({
+      model: 'openai/gpt-6-luna',
+      reasoning: { effort: 'max' },
+      max_tokens: 4000,
+      provider: { require_parameters: true },
+      response_format: { type: 'json_schema' },
+    });
+    expect(body.tools).toBeUndefined();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+  it('omits reasoning for a blank optional setting', async () => {
+    process.env.OPENROUTER_REASONING_EFFORT = '  ';
+    await service.generate('org-a', request, []);
+    const body = JSON.parse(
+      (globalThis.fetch as jest.Mock).mock.calls[0][1].body
+    );
+    expect(body.reasoning).toBeUndefined();
+  });
+  it.each(['MAX', 'unlimited', 'max;provider-secret'])(
+    'rejects unsupported reasoning setting %s before taking a lease or calling the provider',
+    async (effort) => {
+      process.env.OPENROUTER_REASONING_EFFORT = effort;
+      const lease = jest.spyOn(redis, 'set');
+      await expect(
+        service.generate('org-a', request, [])
+      ).rejects.toMatchObject({
+        response: {
+          code: 'AI_PROVIDER_UNAVAILABLE',
+          message: 'AI writing is temporarily unavailable. Please try again.',
+        },
+      });
+      expect(lease).not.toHaveBeenCalled();
+      expect(globalThis.fetch).not.toHaveBeenCalled();
+    }
+  );
   it.each([
     ['missing choice', { choices: [] }, 'AI_INVALID_OUTPUT'],
     [
