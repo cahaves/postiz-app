@@ -7,11 +7,12 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { SWRConfig } from 'swr';
+import { SWRConfig, useSWRConfig } from 'swr';
 import dayjs from 'dayjs';
 import { ManageModal } from '../../apps/frontend/src/components/new-launch/manage.modal';
 import { useLaunchStore } from '../../apps/frontend/src/components/new-launch/store';
 import { ExistingDataContextProvider } from '../../apps/frontend/src/components/launches/helpers/use.existing.data';
+import { UserContext } from '../../apps/frontend/src/components/layout/user.context';
 import type { UseFormReturn } from 'react-hook-form';
 
 const mockLiveForms = new Map<string, UseFormReturn>();
@@ -155,17 +156,46 @@ const response = (body: unknown, status = 200) => ({
 });
 let api: jest.Mock;
 let mutate: jest.Mock;
-const mount = (existing: any = {}, strict = false) => {
+let writingContext: {
+  changeOrganization: (orgId: string) => void;
+  revalidate: () => Promise<unknown>;
+};
+const WritingContext = ({ children }: { children: React.ReactNode }) => {
+  const [orgId, setOrgId] = React.useState('test-org');
+  const { mutate } = useSWRConfig();
+  writingContext = {
+    changeOrganization: setOrgId,
+    revalidate: () =>
+      mutate((key) => Array.isArray(key) && key[0] === 'ai-writing-profile'),
+  };
+  return (
+    <UserContext.Provider value={{ orgId, role: 'ADMIN' } as any}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+const mount = (
+  existing: any = {},
+  strict = false,
+  withWritingContext = false
+) => {
+  const composer = (
+    <ExistingDataContextProvider value={existing}>
+      <ManageModal
+        date={useLaunchStore.getState().date}
+        integrations={[]}
+        reopenModal={() => {}}
+        mutate={mutate}
+      />
+    </ExistingDataContextProvider>
+  );
   const content = (
     <SWRConfig value={{ provider: () => new Map(), shouldRetryOnError: false }}>
-      <ExistingDataContextProvider value={existing}>
-        <ManageModal
-          date={useLaunchStore.getState().date}
-          integrations={[]}
-          reopenModal={() => {}}
-          mutate={mutate}
-        />
-      </ExistingDataContextProvider>
+      {withWritingContext ? (
+        <WritingContext>{composer}</WritingContext>
+      ) : (
+        composer
+      )}
     </SWRConfig>
   );
   return render(
@@ -271,6 +301,19 @@ beforeEach(() => {
   });
   api = jest.fn(async (url) => {
     if (url.endsWith('capabilities')) return response({ configured: true });
+    if (url === '/posts/ai-text/profile')
+      return response({
+        profile: {
+          language: 'auto',
+          tone: 'friendly',
+          brandName: '',
+          audience: '',
+          brandFacts: '',
+          voiceNotes: '',
+          examples: [],
+        },
+        revision: 0,
+      });
     if (url === '/posts/ai-text')
       return response({
         blocks: [{ id: 'a', content: 'Fresh caption' }],
@@ -295,6 +338,71 @@ beforeEach(() => {
   mutate = jest.fn();
 });
 afterEach(cleanup);
+
+it.each(['revision', 'readiness', 'organization'])(
+  'cancels publication when writing profile %s changes during native validation',
+  async (change) => {
+    let finishValidation: (value: any) => void;
+    let profileRevision = 0;
+    let profileAvailable = true;
+    const base = api.getMockImplementation()!;
+    api.mockImplementation((url, options) => {
+      if (url === '/posts/valid')
+        return new Promise((done) => {
+          finishValidation = done;
+        });
+      if (url === '/posts/ai-text/profile')
+        return Promise.resolve(
+          response(
+            {
+              profile: {
+                language: 'auto',
+                tone: 'friendly',
+                brandName: `Revision ${profileRevision}`,
+                audience: '',
+                brandFacts: '',
+                voiceNotes: '',
+                examples: [],
+              },
+              revision: profileRevision,
+            },
+            profileAvailable ? 200 : 503
+          )
+        );
+      return base(url, options);
+    });
+    mount({}, false, true);
+    await generate();
+    await waitFor(() => expect(finishValidation!).toBeDefined());
+    if (change === 'organization') {
+      act(() => writingContext.changeOrganization('another-org'));
+      await waitFor(() =>
+        expect(
+          api.mock.calls.filter(([url]) => url === '/posts/ai-text/profile')
+        ).toHaveLength(2)
+      );
+    } else {
+      profileRevision = change === 'revision' ? 2 : 0;
+      profileAvailable = change !== 'readiness';
+      await act(async () => {
+        await writingContext.revalidate();
+      });
+      if (change === 'revision') await screen.findByDisplayValue('Revision 2');
+      else await screen.findByText('Could not load writing preferences.');
+    }
+    await screen.findByText(
+      'Writing preferences changed while saving. Check the calendar before posting again.'
+    );
+    await act(async () =>
+      finishValidation!(
+        response([{ id: 'channel', valid: true, errors: true }])
+      )
+    );
+    expect(api.mock.calls.filter(([url]) => url === '/posts')).toHaveLength(0);
+    expect(mockClose).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Save accepted/)).toBeNull();
+  }
+);
 
 it('posts once with committed AI text through the actual editor, provider refs and native payload', async () => {
   const view = mount();

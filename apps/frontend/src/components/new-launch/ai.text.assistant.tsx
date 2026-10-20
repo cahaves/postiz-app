@@ -13,6 +13,10 @@ import { Textarea } from '@gitroom/react/form/textarea';
 import { Select } from '@gitroom/react/form/select';
 import { useUser } from '@gitroom/frontend/components/layout/user.context';
 import { AiTextSourceSnapshot, useLaunchStore } from './store';
+import {
+  AiWritingPreferences,
+  WritingPreferencesState,
+} from './ai.writing.preferences';
 import type {
   AiTextCapabilities,
   AiTextResponse,
@@ -66,6 +70,14 @@ export const AiTextAssistant = ({
   const t = useT();
   const fetch = useFetch();
   const capability = useAiTextCapabilities();
+  const user = useUser();
+  const [profileReload, setProfileReload] = useState(0);
+  const [writing, setWriting] = useState<WritingPreferencesState>({
+    orgId: undefined,
+    ready: false,
+    dirty: false,
+    revision: undefined,
+  });
   const state = useLaunchStore();
   const channels = state.selectedIntegrations.filter(({ integration }) =>
     state.current === 'global'
@@ -75,6 +87,17 @@ export const AiTextAssistant = ({
   const sourceKey = JSON.stringify({
     source: state.captureAiTextSource(),
     channels: channels.map(({ integration }) => integration.id),
+    organizationId: user?.orgId,
+    writingRevision:
+      writing.orgId === user?.orgId ? writing.revision : undefined,
+    writingDirty: writing.dirty,
+  });
+  const writingContext = JSON.stringify({
+    organizationId: user?.orgId,
+    profileOrganizationId: writing.orgId,
+    revision: writing.revision,
+    ready: writing.ready,
+    dirty: writing.dirty,
   });
   const [prompt, setPrompt] = useState('');
   const [intent, setIntent] = useState<AiSubmissionIntent>('write');
@@ -87,6 +110,7 @@ export const AiTextAssistant = ({
   const active = useRef<AbortController | undefined>(undefined);
   const submitting = useRef(false);
   const previousSession = useRef(state.aiTextSession);
+  const previousWritingContext = useRef(writingContext);
   const busyCallback = useRef(onBusyChange);
   busyCallback.current = onBusyChange;
   const cancel = () => {
@@ -98,13 +122,25 @@ export const AiTextAssistant = ({
     busyCallback.current(false);
   };
   useEffect(() => {
+    const preferencesChanged =
+      previousWritingContext.current !== writingContext;
+    const wasSubmitting = submitting.current;
     if (
       !submitting.current ||
-      previousSession.current !== state.aiTextSession
+      previousSession.current !== state.aiTextSession ||
+      preferencesChanged
     ) {
       cancel();
       setCandidate(undefined);
       setHistory([]);
+    }
+    if (preferencesChanged && wasSubmitting) {
+      setMessage(
+        t(
+          'ai_profile_changed_during_save',
+          'Writing preferences changed while saving. Check the calendar before posting again.'
+        )
+      );
     }
     if (previousSession.current !== state.aiTextSession) {
       setMessage('');
@@ -113,7 +149,8 @@ export const AiTextAssistant = ({
       setIntent('write');
     }
     previousSession.current = state.aiTextSession;
-  }, [sourceKey]);
+    previousWritingContext.current = writingContext;
+  }, [sourceKey, writingContext]);
   useEffect(
     () => () => {
       sequence.current++;
@@ -130,6 +167,9 @@ export const AiTextAssistant = ({
     disabled ||
     !!capability.error ||
     !capability.data?.configured ||
+    writing.orgId !== user?.orgId ||
+    !writing.ready ||
+    writing.dirty ||
     !channels.length;
   const label =
     intent === 'now'
@@ -164,6 +204,7 @@ export const AiTextAssistant = ({
         signal: controller.signal,
         body: JSON.stringify({
           instruction,
+          writingProfileRevision: writing.revision,
           blocks:
             candidate?.response.blocks ||
             source.blocks.map((block) => ({
@@ -186,6 +227,12 @@ export const AiTextAssistant = ({
       clearTimeout(timeout);
       if (request !== sequence.current || controller.signal.aborted) return;
       if (!response.ok) {
+        if (response.status === 409) {
+          setWriting((previous) => ({ ...previous, ready: false }));
+          setProfileReload((previous) => previous + 1);
+          setCandidate(undefined);
+          setHistory([]);
+        }
         const messages: Record<number, string> = {
           403: t(
             'ai_access_denied',
@@ -194,6 +241,10 @@ export const AiTextAssistant = ({
           429: t(
             'ai_busy',
             'AI writing is busy or at its request limit. Try again shortly.'
+          ),
+          409: t(
+            'ai_profile_changed',
+            'Writing preferences changed. Review the reloaded preferences and try again.'
           ),
           504: t('ai_timeout', 'AI writing timed out. Try again.'),
           503: t(
@@ -368,6 +419,14 @@ export const AiTextAssistant = ({
           {t('ai_retry_availability', 'Retry availability')}
         </Button>
       )}
+      {capability.data?.configured && (
+        <AiWritingPreferences
+          key={`${user?.orgId || 'workspace'}:${profileReload}`}
+          disabled={busy || disabled}
+          onStateChange={setWriting}
+          reloadVersion={profileReload}
+        />
+      )}
       {!!history.length && (
         <details>
           <summary>
@@ -436,9 +495,14 @@ export const AiTextAssistant = ({
             {t('ai_save_channels', 'Final save affects all selected channels:')}{' '}
             {names}.{' '}
             {intent === 'schedule' &&
-              `${state.date.format('DD/MM/YYYY HH:mm Z')} (${
-                'UTC' + state.date.format('Z')
-              }).`}{' '}
+              state.selectedIntegrations
+                .map(({ integration }) => {
+                  const date = state.channelDates[integration.id] || state.date;
+                  return `${integration.name}: ${date.format(
+                    'DD/MM/YYYY HH:mm Z'
+                  )} (UTC${date.format('Z')})`;
+                })
+                .join('; ')}{' '}
             {!!state.repeater &&
               `${t('ai_repeat', 'Existing repeat interval (days):')} ${
                 state.repeater

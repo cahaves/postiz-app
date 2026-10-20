@@ -31,6 +31,8 @@ export class InstagramProvider
 {
   identifier = 'instagram';
   name = 'Instagram\n(Facebook Business)';
+  aiWritingGuidance =
+    'For Instagram, write a caption that gives useful context for the supplied or described media. A concrete problem or use case can lead when it fits the brief; keep a product mention relevant to it. Never describe unseen visuals or ask for swipes or watching without supplied carousel or video context. Use readable paragraphs. A useful next step is optional; do not append a fixed hashtag block, emoji pattern or sales CTA. When hashtags are requested, default to at most five relevant hashtags; fewer or none is fine. Replies answer the actual comment first.';
   isBetweenSteps = true;
   toolTip = 'Instagram must be business and connected to a Facebook page';
   scopes = [

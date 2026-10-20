@@ -8,7 +8,7 @@ Choose the action before sending:
 
 - **Write** produces a suggestion. Apply or discard it, or send another message to refine it. Words such as “publish now” in a message do not publish in Write mode.
 - **Write & post now** generates and applies text, then uses the existing post validation and save flow for all selected channels.
-- **Write & schedule** uses the existing date/time field, including its displayed UTC offset. AI does not choose the date or channels.
+- **Write & schedule** uses each selected channel's date/time override, falling back to the shared date. The summary lists effective times and UTC offsets. AI does not choose the date or channels.
 
 Use the normal post controls to publish already applied text without paying for another generation. Template/set and dummy-output modes offer Write only. Existing required media/settings, republish decisions, shortlinks, and repeat settings remain part of the native save flow. AI generates text only; it cannot create media or recurring fresh content.
 
@@ -17,6 +17,16 @@ Cancel or edit the source to invalidate an in-flight suggestion. Publication als
 An accepted save means queued, not already delivered to a social network. If a POST loses its response or returns a server error, its outcome may be unknown. The UI does not retry it automatically. Check the calendar before posting again to avoid duplicates.
 
 Missing configuration, access denial, busy/rate limits, timeouts, invalid responses, and provider failures appear inline. Availability can be checked again after an administrator configures OpenRouter. Normal editing and native post controls remain available when AI is unavailable.
+
+## Writing preferences
+
+Expand **Writing preferences** in the AI panel. An administrator can save a shared workspace profile: language, tone, brand name, audience, brand facts, voice notes and up to five approved examples. Ordinary members can read the saved profile. The default follows the current draft's language and uses a friendly, specific voice; the [research report](research/2026-10-20-social-writing/README.md) explains the evidence and its limits.
+
+Save or discard edits before generating. Saving persists the profile across composer sessions. Concurrent administrator edits return a conflict; reload the saved version before continuing. Generation includes the displayed profile revision and rejects a stale revision before contacting OpenRouter. Changes to the workspace or profile invalidate suggestions and cancel pending publication validation. If a save may already have reached the server, check the calendar before retrying.
+
+Every native writing request uses the saved profile and guidance from the selected providers. A current explicit writing instruction can override saved style. Examples influence phrasing only; brand claims belong in Brand facts. This is prompt personalization, not fine-tuning or automatic learning from social metrics. No outside post is stored as an approved brand example. Reply text can be drafted from pasted context; the feature does not fetch an inbox or send replies to comments.
+
+The private authenticated GET/POST `/posts/ai-text/profile` routes store a separate `AiWritingProfile` row. They are not added to the public API, MCP or webhooks. Profile saves use optimistic revisions and strict bounds. Generation sends only the selected profile fields, bounded text and provider guidance, never integration credentials or account settings. Install the additive database schema before rolling out this code; the Cahaves startup intentionally does not synchronize it.
 
 ## Verification
 

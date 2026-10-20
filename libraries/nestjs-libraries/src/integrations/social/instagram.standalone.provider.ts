@@ -27,6 +27,7 @@ export class InstagramStandaloneProvider
 {
   identifier = 'instagram-standalone';
   name = 'Instagram\n(Standalone)';
+  aiWritingGuidance = instagramProvider.aiWritingGuidance;
   isBetweenSteps = false;
   refreshCron = true;
   scopes = [

@@ -129,6 +129,21 @@ const stubs = new Set([
     let holdGeneration = false;
     let held;
     const posts = [];
+    const generations = [];
+    const profileSaves = [];
+    const profileReads = [];
+    let writingProfile = {
+      profile: {
+        language: 'auto',
+        tone: 'friendly',
+        brandName: '',
+        audience: '',
+        brandFacts: '',
+        voiceNotes: '',
+        examples: [],
+      },
+      revision: 0,
+    };
     await context.route('**/*', async (route) => {
       const url = new URL(route.request().url());
       if (url.origin !== origin) {
@@ -138,13 +153,39 @@ const stubs = new Set([
       }
       let body;
       if (url.pathname === '/posts/ai-text/capabilities') body = { configured };
+      if (url.pathname === '/posts/ai-text/profile') {
+        if (route.request().method() === 'POST') {
+          const request = route.request().postDataJSON();
+          assert.equal(request.revision, writingProfile.revision);
+          profileSaves.push(request);
+          writingProfile = {
+            profile: request.profile,
+            revision: writingProfile.revision + 1,
+          };
+        } else profileReads.push(writingProfile.revision);
+        body = writingProfile;
+      }
       if (url.pathname === '/posts/ai-text') {
+        const request = route.request().postDataJSON();
+        generations.push({
+          request,
+          profileRevision: writingProfile.revision,
+        });
+        if (request.writingProfileRevision !== writingProfile.revision) {
+          await route.fulfill({
+            status: 409,
+            json: { message: 'Writing preferences changed.' },
+          });
+          return;
+        }
         body = {
           blocks: [
             {
               id: 'synthetic-block',
               content:
-                'Fresh from the studio.\nA new collection arrives Friday.',
+                generations.length === 2
+                  ? 'A suggestion from the previous writing preferences.'
+                  : 'Fresh from the studio.\nA new collection arrives Friday.',
             },
           ],
           limits: [],
@@ -180,8 +221,10 @@ const stubs = new Set([
     const ready = async () => {
       await page.goto(origin);
       await page.getByRole('button', { name: 'Write', exact: true }).waitFor();
-      await page.waitForFunction(
-        () => !document.querySelector('section button')?.disabled
+      await page.waitForFunction(() =>
+        Array.from(document.querySelectorAll('section button')).some(
+          (button) => button.textContent.trim() === 'Write' && !button.disabled
+        )
       );
     };
     const send = async (intent = 'write') => {
@@ -232,14 +275,109 @@ const stubs = new Set([
     assert.equal(posts.length, 0);
     await send();
     await page.getByRole('button', { name: 'Discard' }).waitFor();
-    await page.locator('summary').click();
-    assert.equal(await page.locator('details').getAttribute('open'), '');
-    await page.locator('summary').click();
+    const conversation = page
+      .locator('summary')
+      .filter({ hasText: /^Recent conversation/ });
+    await conversation.click();
+    assert.equal(await conversation.locator('..').getAttribute('open'), '');
+    await conversation.click();
+
+    const draftBeforePreferences = await page.locator('.tiptap').textContent();
+    await page.getByText('Writing preferences', { exact: true }).click();
+    await page
+      .getByRole('combobox', { name: 'Language', exact: true })
+      .selectOption('id');
+    await page
+      .getByRole('textbox', { name: 'Brand name', exact: true })
+      .fill('Fixture Studio');
+    await page
+      .getByRole('textbox', { name: 'Brand facts', exact: true })
+      .fill('This fixture describes a stationery collection.');
+    await page
+      .getByRole('button', { name: 'Add approved example', exact: true })
+      .click();
+    await page
+      .getByRole('textbox', { name: 'Approved example 1', exact: true })
+      .fill('Catatan baru buat ide yang baru.');
+    assert.equal(
+      await page
+        .getByRole('button', { name: 'Write', exact: true })
+        .isDisabled(),
+      true
+    );
+    await page.getByLabel('Suggested text').waitFor({ state: 'hidden' });
+    assert.equal(await conversation.count(), 0);
+    assert.equal(generations.length, 2);
+    await page
+      .getByRole('button', { name: 'Save preferences', exact: true })
+      .click();
+    await page
+      .getByText('Writing preferences saved.', { exact: true })
+      .waitFor();
+    assert.equal(profileSaves.length, 1);
+    assert.deepEqual(profileSaves[0], {
+      profile: {
+        language: 'id',
+        tone: 'friendly',
+        brandName: 'Fixture Studio',
+        audience: '',
+        brandFacts: 'This fixture describes a stationery collection.',
+        voiceNotes: '',
+        examples: ['Catatan baru buat ide yang baru.'],
+      },
+      revision: 0,
+    });
+    assert.equal(
+      await page.locator('.tiptap').textContent(),
+      draftBeforePreferences
+    );
+    await send();
+    await page.getByRole('button', { name: 'Discard', exact: true }).waitFor();
+    assert.equal(generations.length, 3);
+    assert.equal(generations[2].profileRevision, 1);
+    assert.deepEqual(
+      generations.map(({ request }) => request.writingProfileRevision),
+      [0, 0, 1]
+    );
+    assert.deepEqual(generations[2].request.history, []);
+    assert.deepEqual(generations[2].request.blocks, [
+      {
+        id: 'synthetic-block',
+        content: 'Fresh from the studio.\nA new collection arrives Friday.',
+      },
+    ]);
     await page.screenshot({
       path: path.join(output, 'postiz-native-ai-desktop.png'),
       fullPage: true,
     });
-    await page.getByRole('button', { name: 'Discard' }).click();
+    const readsBeforeConflict = profileReads.length;
+    writingProfile = {
+      profile: {
+        ...writingProfile.profile,
+        voiceNotes: 'Keep the stationery captions short and conversational.',
+      },
+      revision: 2,
+    };
+    await send('now');
+    await page
+      .getByText(
+        'Writing preferences changed. Review the reloaded preferences and try again.',
+        { exact: true }
+      )
+      .waitFor();
+    await page.waitForFunction(() =>
+      Array.from(document.querySelectorAll('section button')).some(
+        (button) =>
+          button.textContent.trim() === 'Write & post now' && !button.disabled
+      )
+    );
+    assert.equal(profileReads.length, readsBeforeConflict + 1);
+    assert.equal(profileReads.at(-1), 2);
+    assert.equal(generations.length, 4);
+    assert.equal(generations[3].request.writingProfileRevision, 1);
+    assert.equal(posts.length, 0);
+    assert.equal(await page.getByLabel('Suggested text').count(), 0);
+    assert.equal(await conversation.count(), 0);
     holdGeneration = true;
     await send();
     await page.getByRole('button', { name: 'Cancel', exact: true }).click();
@@ -261,7 +399,22 @@ const stubs = new Set([
       )
       .waitFor();
     assert.equal(posts.length, 0);
+    assert.equal(generations.at(-1).request.writingProfileRevision, 2);
+    assert.deepEqual(generations.at(-1).request.history, []);
     blockMedia = false;
+    await page.evaluate(() => {
+      const state = window.fixture.store.getState();
+      state.setChannelDate('synthetic-channel', state.date.add(2, 'day'));
+    });
+    await page
+      .getByRole('combobox', { name: 'Action' })
+      .selectOption('schedule');
+    assert.match(
+      await page
+        .getByText(/Final save affects all selected channels:/)
+        .textContent(),
+      /Studio updates \(fixture\): 22\/12\/2026 20:34 \+08:00 \(UTC\+08:00\)/
+    );
     await send('schedule');
     await page
       .getByText('Save accepted. Check the calendar for its status.', {
@@ -270,12 +423,26 @@ const stubs = new Set([
       .waitFor();
     assert.equal(posts.length, 1);
     assert.equal(posts[0].date, '2026-12-20T12:34:00');
+    assert.equal(posts[0].posts[0].date, '2026-12-22T12:34:00');
     assert.equal(
       posts[0].posts[0].value[0].content,
       '<p>Fresh from the studio.</p><p>A new collection arrives Friday.</p>'
     );
     await page.setViewportSize({ width: 390, height: 844 });
     await ready();
+    await page.getByText('Writing preferences', { exact: true }).click();
+    assert.equal(
+      await page
+        .getByRole('combobox', { name: 'Language', exact: true })
+        .inputValue(),
+      'id'
+    );
+    assert.equal(
+      await page
+        .getByRole('textbox', { name: 'Approved example 1', exact: true })
+        .inputValue(),
+      'Catatan baru buat ide yang baru.'
+    );
     await send();
     await page.getByRole('button', { name: 'Apply to draft' }).click();
     await page.waitForFunction(() =>
@@ -309,8 +476,10 @@ const stubs = new Set([
     );
     configured = true;
     await page.getByRole('button', { name: 'Retry availability' }).click();
-    await page.waitForFunction(
-      () => !document.querySelector('section button')?.disabled
+    await page.waitForFunction(() =>
+      Array.from(document.querySelectorAll('section button')).some(
+        (button) => button.textContent.trim() === 'Write' && !button.disabled
+      )
     );
     const contrast = async () =>
       page.locator('section').evaluate((section) => {
@@ -384,6 +553,9 @@ const stubs = new Set([
             () => Intl.DateTimeFormat().resolvedOptions().timeZone
           ),
           posts: posts.length,
+          preferenceSaves: profileSaves.length,
+          savedPreferenceRevision: writingProfile.revision,
+          generationConflictRecovered: true,
           minimumAssistantTextContrast: {
             dark: darkContrast,
             light: lightContrast,
@@ -393,7 +565,7 @@ const stubs = new Set([
             'postiz-native-ai-mobile.png',
           ].map((file) => path.join(output, file)),
           coverage:
-            'Real ManageModal, assistant, editor, store and native withProvider; synthetic provider registry, API/auth/context/media/date controls. No full route or live account.',
+            'Real ManageModal, assistant, writing preferences, editor, store and native withProvider; synthetic provider registry, API/auth/context/media/date controls. No full route or live account.',
         },
         null,
         2

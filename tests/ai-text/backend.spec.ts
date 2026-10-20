@@ -9,7 +9,12 @@ const importTimeTransportErrors = ['net', 'tls'].map((name) => {
 
 import { AiTextService } from '@gitroom/nestjs-libraries/openai/ai.text.service';
 import { AiTextRequestDto } from '@gitroom/nestjs-libraries/dtos/posts/ai.text.dto';
+import { defaultAiWritingProfile } from '@gitroom/nestjs-libraries/dtos/posts/ai.writing.profile.dto';
 import { ValidationPipe } from '@nestjs/common';
+
+const writingProfiles = {
+  get: async () => ({ profile: defaultAiWritingProfile(), revision: 0 }),
+};
 
 const request = {
   instruction: 'Write a launch caption',
@@ -122,7 +127,7 @@ function postsService(redis = new LeaseRedis()) {
     {} as never,
     { startWorkflow: writes } as never,
     {} as never,
-    new AiTextService(redis as never) as never
+    new AiTextService(redis as never, writingProfiles as never) as never
   );
 }
 
@@ -365,7 +370,7 @@ describe('bounded OpenRouter transport', () => {
   let service: AiTextService;
   beforeEach(() => {
     redis = new LeaseRedis();
-    service = new AiTextService(redis as never);
+    service = new AiTextService(redis as never, writingProfiles as never);
     process.env.OPENROUTER_API_KEY = '  provider-secret  ';
     delete process.env.OPENROUTER_MODEL;
     globalThis.fetch = providerFetch();
@@ -1015,11 +1020,10 @@ describe('storage deadlines', () => {
     const redis = new LeaseRedis();
     redis.set = () => new Promise(() => {});
     try {
-      const result = new AiTextService(redis as never).generate(
-        'org-a',
-        request,
-        []
-      );
+      const result = new AiTextService(
+        redis as never,
+        writingProfiles as never
+      ).generate('org-a', request, []);
       const assertion = expect(result).rejects.toMatchObject({
         response: { code: 'AI_PROVIDER_UNAVAILABLE' },
       });

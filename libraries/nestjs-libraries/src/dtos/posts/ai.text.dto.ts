@@ -4,9 +4,13 @@ import {
   ArrayMinSize,
   IsArray,
   IsIn,
+  IsInt,
   IsObject,
+  IsOptional,
   IsString,
+  Max,
   MaxLength,
+  Min,
   MinLength,
   Validate,
   ValidateNested,
@@ -148,6 +152,12 @@ class AiTextBounds implements ValidatorConstraintInterface {
 }
 
 export class AiTextRequestDto {
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(2147483647)
+  writingProfileRevision?: number;
+
   @IsString()
   @MinLength(1)
   @MaxLength(2000)

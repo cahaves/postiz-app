@@ -22,6 +22,8 @@ import { hasExtension } from '@gitroom/helpers/utils/has.extension';
 export class ThreadsProvider extends SocialAbstract implements SocialProvider {
   identifier = 'threads';
   name = 'Threads';
+  aiWritingGuidance =
+    'For Threads, write a self-contained thought in conversational language. Use a concrete supplied observation, problem or experience when relevant to the brief. Add product detail only where it answers that point. An honest question is optional when the answer would help; avoid compulsory engagement hooks. Replies answer the actual comment first. Do not invent a personal experience, revenue claim or controversy.';
   isBetweenSteps = false;
   scopes = [
     'threads_basic',

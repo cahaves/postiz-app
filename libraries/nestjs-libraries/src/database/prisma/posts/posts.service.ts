@@ -187,6 +187,7 @@ export class PostsService {
           integrationId: channel.integrationId,
           identifier: integration.providerIdentifier,
           maximumCharacters: maximum || null,
+          writingGuidance: provider.aiWritingGuidance,
         };
       })
     );

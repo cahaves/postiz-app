@@ -45,11 +45,20 @@ model Organization {
   webhooks            Webhooks[]
   oauthApp            OAuthApp[]
   oauthAuthorizations OAuthAuthorization[]
+  aiWritingProfile    AiWritingProfile?
 
   @@index([apiKey])
   @@index([streakSince])
   @@index([paymentId])
   @@index([deletedAt])
+}
+
+model AiWritingProfile {
+  organizationId String       @id
+  profile        Json
+  revision       Int          @default(1)
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 model Tags {

@@ -186,6 +186,7 @@ export interface SocialProvider
   refreshCron?: boolean;
   refreshErrorMessage?(err: any): string | undefined;
   dto?: any;
+  aiWritingGuidance?: string;
   maxLength: (additionalSettings?: any, settings?: any) => number;
   checkValidity(
     posts: Array<{ path: string; thumbnail?: string }[]>,

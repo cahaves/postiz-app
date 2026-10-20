@@ -1,0 +1,68 @@
+name: Cahaves Main Container v2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  build:
+    if: github.repository == 'cahaves/postiz-app' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        source:
+          - ${{ github.sha }}
+          - 16c0cfc22f8079c63f6e4b8590b3d87f8f1bba78
+    permissions:
+      contents: read
+    env:
+      IMAGE_TAG: cahaves/postiz-app:main-${{ matrix.source }}
+      SOURCE_COMMIT: ${{ matrix.source }}
+    steps:
+      - name: Checkout the build commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: ${{ matrix.source }}
+
+      - name: Set up native AMD64 Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Build the Cahaves image
+        shell: bash
+        run: |
+          docker buildx build --platform linux/amd64 \
+            --file Dockerfile.cahaves \
+            --tag "$IMAGE_TAG" \
+            --build-arg NEXT_PUBLIC_VERSION="main-$SOURCE_COMMIT" \
+            --label org.opencontainers.image.revision="$SOURCE_COMMIT" \
+            --label org.opencontainers.image.source="https://github.com/cahaves/postiz-app" \
+            --pull --load --provenance=false --sbom=false .
+
+      - name: Export the image and checksum
+        shell: bash
+        run: |
+          test "$(docker image inspect --format '{{.Architecture}}' "$IMAGE_TAG")" = amd64
+          test "$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$IMAGE_TAG")" = "$SOURCE_COMMIT"
+          mkdir -p image-artifact
+          docker image inspect --format '{{.Id}}' "$IMAGE_TAG" > image-artifact/image-id.txt
+          docker image inspect --format '{{json .Config.Labels}}' "$IMAGE_TAG" > image-artifact/labels.json
+          docker save "$IMAGE_TAG" | gzip -1 > image-artifact/image.tar.gz
+          cd image-artifact
+          sha256sum image.tar.gz > image.tar.gz.sha256
+          sha256sum --check image.tar.gz.sha256
+
+      - name: Upload the immutable build artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cahaves-main-${{ matrix.source }}
+          path: image-artifact/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1

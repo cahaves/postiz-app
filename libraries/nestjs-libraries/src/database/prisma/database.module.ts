@@ -22,6 +22,8 @@ import { PaymentProviderManager } from '@gitroom/nestjs-libraries/services/payme
 import { RevenueCatProvider } from '@gitroom/nestjs-libraries/services/payment/providers/revenuecat.provider';
 import { ExtractContentService } from '@gitroom/nestjs-libraries/openai/extract.content.service';
 import { AiTextService } from '@gitroom/nestjs-libraries/openai/ai.text.service';
+import { AiWritingProfileRepository } from '@gitroom/nestjs-libraries/database/prisma/ai-writing-profile/ai.writing.profile.repository';
+import { AiWritingProfileService } from '@gitroom/nestjs-libraries/database/prisma/ai-writing-profile/ai.writing.profile.service';
 import { OpenaiService } from '@gitroom/nestjs-libraries/openai/openai.service';
 import { DeepgramService } from '@gitroom/nestjs-libraries/deepgram/deepgram.service';
 import { ClippingService } from '@gitroom/nestjs-libraries/database/prisma/clipping/clipping.service';
@@ -91,6 +93,8 @@ import { AdminStatsService } from '@gitroom/nestjs-libraries/database/prisma/adm
     ExtractContentService,
     OpenaiService,
     AiTextService,
+    AiWritingProfileRepository,
+    AiWritingProfileService,
     DeepgramService,
     ClippingService,
     ClippingRepository,

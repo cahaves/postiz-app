@@ -42,7 +42,9 @@ const Fixture = () => {
   };
   return (
     <SWRConfig value={{ provider: () => new Map(), shouldRetryOnError: false }}>
-      <UserContext.Provider value={{ orgId: 'synthetic-org' } as any}>
+      <UserContext.Provider
+        value={{ orgId: 'synthetic-org', role: 'ADMIN' } as any}
+      >
         <ExistingDataContextProvider value={{ posts: [], settings: {} }}>
           <div className="h-screen flex flex-col">
             <div className="px-[20px] py-[8px] text-[14px]">
