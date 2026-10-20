@@ -61,4 +61,6 @@ Files: `docs/research/2026-10-20-social-writing/` for paraphrased observations, 
 - [x] Explain the chosen defaults and contradictory examples without causal claims.
 - [x] Run a separate agent review against repository patterns, security and publication behavior; fix findings.
 - [x] Review staged diff for credentials and unrelated changes. Commit and push to Cahaves origin/main.
-- [ ] Report verified source and deployment status separately, with remaining evidence limits.
+- [x] Extend the study to sumopodcloud, monveo.app and shobrunjb; review the 22-post chart and product-scoped editable defaults.
+- [x] Install and verify the initial profile on the live workspace without overwriting existing user preferences or publishing test posts.
+- [x] Report verified source and deployment status separately, with remaining evidence limits.
